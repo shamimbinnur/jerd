@@ -1,5 +1,5 @@
 {
-  "name": "Jerd",
+  "name": "jerd",
   "version": "1.0.0",
   "description": "Jerd is a lightweight, Markdown-first CLI journaling tool built for developers. It uses flexible templates to enable structured writing directly from the command line.",
   "main": "src/index.js",

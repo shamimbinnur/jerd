@@ -1,0 +1,18 @@
+# Development files
+.github/
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Documentation (if you want to exclude)
+*.md
+!README.md
+
+# Test files
+test/
+tests/
+*.test.js
+*.spec.js
