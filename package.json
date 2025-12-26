@@ -1,0 +1,36 @@
+{
+  "name": "Jerd",
+  "version": "1.0.0",
+  "description": "Jerd is a lightweight, Markdown-first CLI journaling tool built for developers. It uses flexible templates to enable structured writing directly from the command line.",
+  "main": "src/index.js",
+  "type": "module",
+  "bin": {
+    "jerd": "./bin/jerd.js"
+  },
+  "scripts": {
+    "test": "echo \"No tests yet\"",
+    "dev": "node bin/jerd.js"
+  },
+  "keywords": [
+    "journal",
+    "markdown",
+    "cli",
+    "diary",
+    "notes"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "boxen": "^7.1.1",
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "dayjs": "^1.11.10",
+    "figlet": "^1.9.4",
+    "gradient-string": "^2.0.2",
+    "inquirer": "^9.2.12",
+    "ora": "^8.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
