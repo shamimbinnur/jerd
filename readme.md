@@ -13,15 +13,7 @@ A CLI tool for managing daily Markdown journals in a structured folder system.
 ## Installation
 
 ```bash
-npm install
-chmod +x bin/jerd.js
-npm link
-```
-
-Or use directly:
-
-```bash
-node bin/jerd.js <command>
+npm install -g jerd
 ```
 
 ## Quick Start
