@@ -583,4 +583,4 @@ Jerd follows a minimal, predictable, filesystem-based philosophy:
 
 Shamim
 
-[X (formerly twitter)](https://x.com/shamim10x) | [GitHub](https://github.com/shamimbinnur)
+[X (formerly twitter)](https://x.com/shamim_10x) | [GitHub](https://github.com/shamimbinnur)
