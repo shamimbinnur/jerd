@@ -578,3 +578,9 @@ Jerd follows a minimal, predictable, filesystem-based philosophy:
 - **Opinionated structure** - Predictable paths (YYYY/YYYY-MM/YYYY-MM-DD.md)
 - **External templates** - Easy to share and version control
 - **Cross-platform** - Works everywhere Node.js runs
+
+## Author
+
+Shamim
+
+[X (formerly twitter)](https://x.com/shamim10x) | [GitHub](https://github.com/shamimbinnur)
