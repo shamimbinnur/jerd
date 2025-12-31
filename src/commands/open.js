@@ -25,9 +25,9 @@ async function openCommand(dateArg, options = {}) {
   // Load configuration
   const config = await loadConfig();
 
-  // Calculate file path: Jerd/YYYY/MM/YYYY-MM-DD.md
+  // Calculate file path: Jerd/YYYY/YYYY-MM/YYYY-MM-DD.md
   const year = date.format('YYYY');
-  const month = date.format('MM');
+  const month = date.format('YYYY-MM');
   const filename = `${date.format('YYYY-MM-DD')}.md`;
 
   const jerdPath = getJerdPath();

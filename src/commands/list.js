@@ -51,6 +51,19 @@ function getMonthNumber(monthStr) {
 }
 
 /**
+ * Extracts month number from folder name
+ * @param {string} folderName - The month folder name (e.g., "2025-12")
+ * @returns {string|null} - The 2-digit month number (e.g., "12")
+ */
+function extractMonthNumber(folderName) {
+  // New format: YYYY-MM (e.g., "2025-12")
+  if (/^\d{4}-\d{2}$/.test(folderName)) {
+    return folderName.split('-')[1];
+  }
+  return null;
+}
+
+/**
  * Reads directory contents and returns sorted array
  */
 async function readDirectory(dirPath) {
@@ -77,8 +90,9 @@ async function isDirectory(path) {
 /**
  * Prints a tree structure for a single month
  */
-async function printMonth(monthPath, monthNumber, prefix = '', isLast = true) {
-  const monthName = MONTH_NAMES_DISPLAY[monthNumber] || monthNumber;
+async function printMonth(monthPath, monthFolderName, prefix = '', isLast = true) {
+  const monthNumber = extractMonthNumber(monthFolderName);
+  const monthName = monthNumber ? MONTH_NAMES_DISPLAY[monthNumber] : monthFolderName;
   const connector = isLast ? ICONS.treeLast : ICONS.tree;
   const monthColor = chalk.cyan.bold(monthName);
 
@@ -148,7 +162,8 @@ async function printFullTree(jerdPath) {
  */
 async function printMonthEntries(jerdPath, monthNumber, year) {
   const yearPath = join(jerdPath, year);
-  const monthPath = join(yearPath, monthNumber);
+  const monthFolderName = `${year}-${monthNumber}`;
+  const monthPath = join(yearPath, monthFolderName);
 
   if (!(await fileExists(monthPath)) || !(await isDirectory(monthPath))) {
     errorMessage(`No entries found for ${MONTH_NAMES_DISPLAY[monthNumber]} ${year}`);
