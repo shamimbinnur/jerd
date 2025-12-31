@@ -1,11 +1,14 @@
 {
   "name": "jerd",
+  "description": "A terminal-first journaling tool that syncs just fine with your favourite editors — Vim to VS Code ",
+  "author": {
+    "name": "Shamim"
+  },
   "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/shamimbinnur/jerd.git"
   },
-  "description": "Jerd is a lightweight, Markdown-first CLI journaling tool built for developers. It uses flexible templates to enable structured writing directly from the command line.",
   "main": "src/index.js",
   "type": "module",
   "bin": {

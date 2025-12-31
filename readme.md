@@ -1,6 +1,12 @@
-# Jerd
+# Jerd - A terminal-first journaling tool
 
-A CLI tool for managing daily Markdown journals in a structured folder system.
+A terminal-first journaling tool that syncs just fine with your favourite editors — Vim to VS Code
+
+## Overview
+
+In Details: Jerd is a terminal-first journaling tool that allows users to do daily journaling right from their terminals. It works from terminal-based editors like Nano/Vim to GUI-based editors like VS Code. Its commands are simple and intuitive, letting you navigate journals directly from the terminal in a fast and convenient way.
+
+Jerd follows a folder-based hierarchy and uses Markdown for journal files, which naturally lets you build content-first blogging sites on top of your journals using tools like Astro, Hugo, or Eleventy.
 
 ## Features
 
@@ -26,7 +32,7 @@ jerd init
 
 This creates:
 
-- `Jerd/` directory in your current location
+- `jerd/` directory in your current location
 - `config.json` with default settings
 - `templates.json` with a default template
 
@@ -222,6 +228,7 @@ jerd list feb 2023
 All date-accepting commands (`new` and `open`) support flexible date formats:
 
 **Keywords:**
+
 ```bash
 today, now          # Current date
 yesterday           # Previous day
@@ -229,6 +236,7 @@ tomorrow            # Next day
 ```
 
 **Weekdays:**
+
 ```bash
 monday, mon         # Most recent Monday (including today)
 friday, fri         # Most recent Friday
@@ -236,12 +244,14 @@ friday, fri         # Most recent Friday
 ```
 
 **ISO Dates:**
+
 ```bash
 2025-12-25          # YYYY-MM-DD format
 2025/12/25          # YYYY/MM/DD format
 ```
 
 **Day Only (current month/year):**
+
 ```bash
 25                  # 25th of current month
 15th                # 15th of current month
@@ -249,6 +259,7 @@ friday, fri         # Most recent Friday
 ```
 
 **Day + Month (current year):**
+
 ```bash
 25 dec              # December 25th, current year
 25th december       # December 25th, current year
@@ -256,6 +267,7 @@ friday, fri         # Most recent Friday
 ```
 
 **Day + Month + Year:**
+
 ```bash
 25 dec 24           # December 25, 2024
 25th december 2024  # December 25, 2024
@@ -263,12 +275,14 @@ friday, fri         # Most recent Friday
 ```
 
 **Month Only (defaults to 1st, current year):**
+
 ```bash
 dec                 # December 1st, current year
 january             # January 1st, current year
 ```
 
 **Month + Year (defaults to 1st):**
+
 ```bash
 dec 24              # December 1, 2024
 december 2025       # December 1, 2025
