@@ -1,3 +1,25 @@
+// Mood definitions with numeric values for graphing
+export const MOOD_VALUES = {
+  great: { emoji: "😊", label: "Great", value: 5, color: "#10b981" },
+  good: { emoji: "🙂", label: "Good", value: 4, color: "#22c55e" },
+  okay: { emoji: "😐", label: "Okay", value: 3, color: "#f59e0b" },
+  low: { emoji: "😔", label: "Low", value: 2, color: "#f97316" },
+};
+
+export const MOOD_ORDER = ["great", "good", "okay", "low"];
+
+export function getMoodValue(moodStr) {
+  return MOOD_VALUES[moodStr]?.value ?? null;
+}
+
+export function getMoodEmoji(moodStr) {
+  return MOOD_VALUES[moodStr]?.emoji ?? "❓";
+}
+
+export function getMoodColor(moodStr) {
+  return MOOD_VALUES[moodStr]?.color ?? "#6b7280";
+}
+
 export function createDefaultConfig() {
   return {
     editor: getDefaultEditor(),
@@ -12,33 +34,8 @@ export function createDefaultTemplates() {
     templates: [
       {
         name: "default",
-        description: "Simple gratitude and mood tracking",
-        sections: [
-          {
-            type: "auto-date",
-            title: "📅 Date",
-            format: "dddd, MMMM D, YYYY",
-          },
-          {
-            type: "list",
-            title: "🙏 What I'm grateful for",
-            items: [],
-          },
-          {
-            type: "text",
-            title: "😊 Mood",
-            content: "",
-          },
-          {
-            type: "text",
-            title: "📝 Notes",
-            content: "",
-          },
-        ],
-      },
-      {
-        name: "daily",
         description: "Full morning/evening reflection with goals",
+        tags: ["daily", "reflection"],
         sections: [
           {
             type: "text",
@@ -47,13 +44,9 @@ export function createDefaultTemplates() {
           },
           {
             type: "text",
-            title: "🏷️ Tags",
-            content: "- #tag1 #tag2 #tag3",
-          },
-          {
-            type: "text",
             title: "🌅 Morning Reflection",
-            content: "- How do I feel this morning?\n- Top 3 priorities today:\n  1. \n  2. \n  3. ",
+            content:
+              "- How do I feel this morning?\n- Top 3 priorities today:\n  1. \n  2. \n  3. ",
           },
           {
             type: "text",
@@ -68,84 +61,18 @@ export function createDefaultTemplates() {
           {
             type: "text",
             title: "🌙 Evening Reflection",
-            content: "- Wins today: \n- Lessons learned: \n- How do I feel tonight? \n- Any adjustments for tomorrow?",
-          },
-        ],
-      },
-      {
-        name: "mindfulness",
-        description: "Wellness and gratitude focused",
-        sections: [
-          {
-            type: "text",
-            title: "🧘 Mindfulness Journal - {{date}}",
-            content: "",
+            content:
+              "- Wins today: \n- How do I feel tonight? \n- Any adjustments for tomorrow?",
           },
           {
             type: "text",
-            title: "🏷️ Tags",
-            content: "- #gratitude #wellness #mindfulness",
+            title: "📚 What I Learned Today",
+            content: "- ",
           },
           {
             type: "text",
-            title: "🙏 Gratitude",
-            content: "- Today I am thankful for:\n  1. \n  2. \n  3. ",
-          },
-          {
-            type: "text",
-            title: "🧠 Mindfulness Exercise",
-            content: "- How present was I today? (1-10):\n- Moments I felt truly present:",
-          },
-          {
-            type: "text",
-            title: "✨ Positive Affirmations",
-            content: "- Affirmation 1: \n- Affirmation 2: \n- Affirmation 3: ",
-          },
-          {
-            type: "text",
-            title: "💭 Reflection",
-            content: "- Best moment of the day: \n- Something I want to improve tomorrow:",
-          },
-        ],
-      },
-      {
-        name: "work",
-        description: "Work/project tracking and learnings",
-        sections: [
-          {
-            type: "text",
-            title: "💼 Work Journal - {{date}}",
-            content: "",
-          },
-          {
-            type: "text",
-            title: "🏷️ Tags",
-            content: "- #project #tasks #learning",
-          },
-          {
-            type: "text",
-            title: "📋 Tasks & Priorities",
-            content: "- Top tasks today:\n  1. \n  2. \n  3. ",
-          },
-          {
-            type: "text",
-            title: "✅ Progress",
-            content: "- What I completed today:",
-          },
-          {
-            type: "text",
-            title: "🚧 Challenges / Blockers",
-            content: "- Any obstacles faced:",
-          },
-          {
-            type: "text",
-            title: "💡 Insights & Learnings",
-            content: "- What I learned from today's work:",
-          },
-          {
-            type: "text",
-            title: "📅 Tomorrow's Plan",
-            content: "- Key tasks for tomorrow:",
+            title: "📌 Important Things to Remember",
+            content: "- ",
           },
         ],
       },
@@ -179,8 +106,6 @@ export function getDefaultEditor() {
   switch (process.platform) {
     case "win32":
       return "notepad";
-    case "darwin":
-    case "linux":
     default:
       return "nano";
   }

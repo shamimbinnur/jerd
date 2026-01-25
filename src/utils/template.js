@@ -16,16 +16,32 @@ export async function loadTemplates() {
   }
 }
 
-export function renderTemplate(template, date) {
+export function renderTemplate(template, date, mood = null) {
+  // Build frontmatter
+  const frontmatterFields = [];
+  frontmatterFields.push(`date: ${date.format('YYYY-MM-DD')}`);
+
+  if (mood) {
+    frontmatterFields.push(`mood: ${mood}`);
+  }
+
+  if (template.tags && template.tags.length > 0) {
+    frontmatterFields.push(`tags: [${template.tags.join(', ')}]`);
+  }
+
+  const frontmatter = `---\n${frontmatterFields.join('\n')}\n---\n\n`;
+
   const sections = template.sections.map(section => {
     return renderSection(section, date);
   });
 
-  return sections.join('\n\n') + '\n';
+  return frontmatter + sections.join('\n\n') + '\n';
 }
 
 export function renderSection(section, date) {
-  const title = section.title ? `## ${section.title}\n\n` : '';
+  let title = section.title ? `## ${section.title}\n\n` : '';
+  // Replace {{date}} placeholder with formatted date
+  title = title.replace(/\{\{date\}\}/g, date.format('YYYY-MM-DD'));
 
   switch (section.type) {
     case 'auto-date':

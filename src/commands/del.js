@@ -1,11 +1,11 @@
+import { promises as fs } from 'fs';
 import { join } from 'path';
-import { loadConfig } from '../utils/jerd.config.js';
+import inquirer from 'inquirer';
 import { fileExists, getJerdPath } from '../utils/file-system.js';
-import { openInEditor } from '../utils/editor.js';
 import { parseDate } from '../utils/date-utils.js';
-import { successMessage, errorMessage, gentleHint } from '../utils/ui.js';
+import { successMessage, errorMessage, warningMessage, gentleHint } from '../utils/ui.js';
 
-async function openCommand(dateArg, options = {}) {
+async function delCommand(dateArg) {
   // Parse date or use today
   const date = parseDate(dateArg);
   if (!date) {
@@ -23,9 +23,6 @@ async function openCommand(dateArg, options = {}) {
     process.exit(1);
   }
 
-  // Load configuration
-  const config = await loadConfig();
-
   // Calculate file path: Jerd/YYYY/YYYY-MM/YYYY-MM-DD.md
   const year = date.format('YYYY');
   const month = date.format('YYYY-MM');
@@ -41,14 +38,28 @@ async function openCommand(dateArg, options = {}) {
 
   if (!exists) {
     errorMessage(`Journal entry not found: ${filePath}`);
-    gentleHint('Create it with "jerd new" and start writing!');
+    gentleHint('Nothing to delete here!');
     process.exit(1);
   }
 
-  successMessage(`📖 Opening your journal entry: ${filePath}`);
+  // Ask for confirmation
+  warningMessage(`You are about to delete: ${filename}`);
 
-  // Open in editor (use editor override if provided via -e flag)
-  await openInEditor(filePath, config.editor, options.editor);
+  const { confirm } = await inquirer.prompt([{
+    type: 'confirm',
+    name: 'confirm',
+    message: '🗑️  Are you sure you want to delete this entry?',
+    default: false
+  }]);
+
+  if (!confirm) {
+    console.log('\nDeletion cancelled.');
+    return;
+  }
+
+  // Delete the file
+  await fs.unlink(filePath);
+  successMessage(`🗑️  Deleted: ${filename}`);
 }
 
-export default openCommand;
+export default delCommand;

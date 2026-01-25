@@ -1,10 +1,10 @@
 {
   "name": "jerd",
-  "description": "A terminal-first journaling tool that syncs just fine with your favourite editors — Vim to VS Code ",
+  "description": "A terminal-first journaling tool that syncs just fine with your favourite editors — Vim to VS Code",
   "author": {
-    "name": "Shamim"
+    "name": "Shamim Bin Nur"
   },
-  "version": "1.0.1",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/shamimbinnur/jerd.git"

@@ -1,14 +1,18 @@
-import { spawn } from 'child_process';
-import { resolve } from 'path';
-import { infoMessage } from './ui.js';
+import { spawn } from "child_process";
+import { resolve } from "path";
+import { infoMessage } from "./ui.js";
 
 // Known terminal editors
-const TERMINAL_EDITORS = ['nano', 'vim', 'vi', 'emacs', 'nvim', 'helix', 'micro'];
+const TERMINAL_EDITORS = ["nano", "vim", "vi", "emacs", "nvim"];
 
 // Known GUI editors with CLI commands
-const GUI_EDITORS = ['code', 'subl', 'atom', 'notepad++', 'gedit'];
+const GUI_EDITORS = ["code", "subl", "atom"];
 
-export async function openInEditor(filePath, editorCommand = 'nano', editorOverride = null) {
+export async function openInEditor(
+  filePath,
+  editorCommand = "nano",
+  editorOverride = null,
+) {
   // Use override if provided, otherwise use the configured editor
   const editor = editorOverride || editorCommand;
 
@@ -36,11 +40,11 @@ export async function openInEditor(filePath, editorCommand = 'nano', editorOverr
 function openInTerminalEditor(filePath, editor) {
   return new Promise((resolve, reject) => {
     const editorProcess = spawn(editor, [filePath], {
-      stdio: 'inherit',  // Inherit parent's stdin, stdout, stderr
-      shell: false
+      stdio: "inherit", // Inherit parent's stdin, stdout, stderr
+      shell: false,
     });
 
-    editorProcess.on('exit', (code) => {
+    editorProcess.on("exit", (code) => {
       if (code === 0) {
         resolve();
       } else {
@@ -48,9 +52,14 @@ function openInTerminalEditor(filePath, editor) {
       }
     });
 
-    editorProcess.on('error', (error) => {
-      console.error(`\nError: Failed to open editor "${editor}":`, error.message);
-      console.error('Please check your jerd.config.js and ensure the editor is installed.');
+    editorProcess.on("error", (error) => {
+      console.error(
+        `\nError: Failed to open editor "${editor}":`,
+        error.message,
+      );
+      console.error(
+        "Please check your jerd.config.js and ensure the editor is installed.",
+      );
       reject(error);
     });
   });
@@ -59,22 +68,22 @@ function openInTerminalEditor(filePath, editor) {
 function openInGUIEditor(filePath, editor) {
   return new Promise((resolve, reject) => {
     // Most GUI editors support --wait flag to block until closed
-    const args = ['--wait', filePath];
+    const args = ["--wait", filePath];
 
     const editorProcess = spawn(editor, args, {
-      stdio: 'ignore',
-      detached: false
+      stdio: "ignore",
+      detached: false,
     });
 
-    editorProcess.on('exit', (code) => {
+    editorProcess.on("exit", (code) => {
       resolve();
     });
 
-    editorProcess.on('error', (error) => {
+    editorProcess.on("error", (error) => {
       // Try without --wait flag as fallback
       const fallbackProcess = spawn(editor, [filePath], {
-        stdio: 'ignore',
-        detached: true
+        stdio: "ignore",
+        detached: true,
       });
 
       fallbackProcess.unref(); // Allow parent to exit

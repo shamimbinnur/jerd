@@ -1,11 +1,11 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { getJerdPath, fileExists } from '../utils/file-system.js';
-import { errorMessage, infoMessage } from '../utils/ui.js';
+import { errorMessage, infoMessage, softHeader, gentleHint } from '../utils/ui.js';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 
-// Nerd font icons
+// Cozy icons
 const ICONS = {
   folder: '📁',
   year: '📅',
@@ -94,7 +94,7 @@ async function printMonth(monthPath, monthFolderName, prefix = '', isLast = true
   const monthNumber = extractMonthNumber(monthFolderName);
   const monthName = monthNumber ? MONTH_NAMES_DISPLAY[monthNumber] : monthFolderName;
   const connector = isLast ? ICONS.treeLast : ICONS.tree;
-  const monthColor = chalk.cyan.bold(monthName);
+  const monthColor = chalk.hex('#8b5cf6').bold(monthName);
 
   console.log(`${prefix}${connector} ${ICONS.month} ${monthColor}`);
 
@@ -107,7 +107,7 @@ async function printMonth(monthPath, monthFolderName, prefix = '', isLast = true
   journalFiles.forEach((file, index) => {
     const isLastFile = index === journalFiles.length - 1;
     const fileConnector = isLastFile ? ICONS.treeLast : ICONS.tree;
-    const fileName = chalk.green(file.name);
+    const fileName = chalk.hex('#10b981')(file.name);
     console.log(`${childPrefix}${fileConnector} ${ICONS.file} ${fileName}`);
   });
 }
@@ -117,7 +117,7 @@ async function printMonth(monthPath, monthFolderName, prefix = '', isLast = true
  */
 async function printYear(yearPath, year, prefix = '', isLast = true) {
   const connector = isLast ? ICONS.treeLast : ICONS.tree;
-  const yearColor = chalk.yellow.bold(year);
+  const yearColor = chalk.hex('#f59e0b').bold(year);
 
   console.log(`${prefix}${connector} ${ICONS.year} ${yearColor}`);
 
@@ -143,10 +143,11 @@ async function printFullTree(jerdPath) {
 
   if (years.length === 0) {
     infoMessage('No journal entries found.');
+    gentleHint('Start your first entry with "jerd new"');
     return;
   }
 
-  console.log(chalk.magenta.bold(`\n${ICONS.folder} Journal Entries\n`));
+  softHeader('Your Journal Entries');
 
   for (let i = 0; i < years.length; i++) {
     const year = years[i];
@@ -175,10 +176,11 @@ async function printMonthEntries(jerdPath, monthNumber, year) {
 
   if (journalFiles.length === 0) {
     infoMessage(`No journal entries in ${MONTH_NAMES_DISPLAY[monthNumber]} ${year}`);
+    gentleHint('Create an entry with "jerd new" for this month');
     return;
   }
 
-  console.log(chalk.magenta.bold(`\n${ICONS.month} ${MONTH_NAMES_DISPLAY[monthNumber]} ${year}\n`));
+  softHeader(`${ICONS.month} ${MONTH_NAMES_DISPLAY[monthNumber]} ${year}`);
 
   journalFiles.forEach((file, index) => {
     const isLast = index === journalFiles.length - 1;
@@ -206,10 +208,11 @@ async function printYearEntries(jerdPath, year) {
 
   if (months.length === 0) {
     infoMessage(`No journal entries in ${year}`);
+    gentleHint('Create an entry with "jerd new" for this year');
     return;
   }
 
-  console.log(chalk.magenta.bold(`\n${ICONS.year} ${year}\n`));
+  softHeader(`${ICONS.year} ${year}`);
 
   // Read months in the year and print them directly (without repeating year)
   const childPrefix = '';
@@ -262,6 +265,7 @@ async function listCommand(args, options = {}) {
 
   if (!monthNumber) {
     errorMessage(`Invalid month or year: ${firstArg}`);
+    gentleHint('Try month names like "January", "jan", or a year like "2024"');
     console.error('\nSupported formats:');
     console.error('  - Month names: January, February, jan, feb, ...');
     console.error('  - Year: 2024, 2023, ...\n');
@@ -274,6 +278,7 @@ async function listCommand(args, options = {}) {
   // Validate year format if provided
   if (secondArg && !/^\d{4}$/.test(secondArg)) {
     errorMessage(`Invalid year format: ${secondArg}`);
+    gentleHint('Year should be a 4-digit number like "2024"');
     console.error('\nYear must be a 4-digit number (e.g., 2024)\n');
     process.exit(1);
   }

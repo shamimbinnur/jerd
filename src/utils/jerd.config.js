@@ -8,7 +8,12 @@ export async function loadConfig() {
 
   try {
     const content = await fs.readFile(configPath, 'utf8');
-    return JSON.parse(content);
+    const config = JSON.parse(content);
+    // Set default uiStyle to 'astro' for backward compatibility
+    if (!config.uiStyle) {
+      config.uiStyle = 'astro';
+    }
+    return config;
   } catch (error) {
     if (error.code === 'ENOENT') {
       console.error('Error: No jerd project found in this directory or any parent directory.');
