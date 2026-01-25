@@ -12,7 +12,7 @@ import streakCommand from "../src/commands/streak.js";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { gradientTitle, dimText } from "../src/utils/ui.js";
+import { gradientTitle, dimText, landingScreen } from "../src/utils/ui.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -155,9 +155,14 @@ program
     }
   });
 
-program.parse(process.argv);
+async function main() {
+  const hasArgs = process.argv.slice(2).length > 0;
+  if (!hasArgs) {
+    await landingScreen();
+    return;
+  }
 
-// If no command provided, show help
-if (!process.argv.slice(2).length) {
-  program.outputHelp();
+  program.parse(process.argv);
 }
+
+main();

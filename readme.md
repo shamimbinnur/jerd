@@ -4,7 +4,7 @@ A terminal-first journaling tool that syncs just fine with your favourite editor
 
 ## Overview
 
-In Details: Jerd is a terminal-first journaling tool that allows users to do daily journaling right from their terminals. It works from terminal-based editors like Nano/Vim to GUI-based editors like VS Code. Its commands are simple and intuitive, letting you navigate journals directly from the terminal in a fast and convenient way.
+Jerd is a terminal-first journaling tool that allows users to do daily journaling right from their terminals. It works from terminal-based editors like Nano/Vim to GUI-based editors like VS Code. Its commands are simple and intuitive, letting you navigate journals directly from the terminal in a fast and convenient way.
 
 Jerd follows a folder-based hierarchy and uses Markdown for journal files, which naturally lets you build content-first blogging sites on top of your journals using tools like Astro, Hugo, or Eleventy.
 
@@ -581,6 +581,6 @@ Jerd follows a minimal, predictable, filesystem-based philosophy:
 
 ## Author
 
-Shamim
+Shamim Bin Nur
 
 [X (formerly twitter)](https://x.com/shamim_10x) | [GitHub](https://github.com/shamimbinnur)

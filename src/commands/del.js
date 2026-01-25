@@ -3,7 +3,7 @@ import { join } from 'path';
 import inquirer from 'inquirer';
 import { fileExists, getJerdPath } from '../utils/file-system.js';
 import { parseDate } from '../utils/date-utils.js';
-import { successMessage, errorMessage, warningMessage, gentleHint } from '../utils/ui.js';
+import { successMessage, errorMessage, warningMessage, gentleHint, notInitializedBanner } from '../utils/ui.js';
 
 async function delCommand(dateArg) {
   // Parse date or use today
@@ -29,6 +29,13 @@ async function delCommand(dateArg) {
   const filename = `${date.format('YYYY-MM-DD')}.md`;
 
   const jerdPath = getJerdPath();
+
+  // Check if jerd is initialized
+  if (!(await fileExists(jerdPath))) {
+    notInitializedBanner();
+    process.exit(1);
+  }
+
   const yearPath = join(jerdPath, year);
   const monthPath = join(yearPath, month);
   const filePath = join(monthPath, filename);

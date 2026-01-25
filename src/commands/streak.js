@@ -1,14 +1,14 @@
 import dayjs from 'dayjs';
 import { getJerdPath, fileExists } from '../utils/file-system.js';
 import { renderStreakChart, collectActivityData } from '../utils/streak-chart.js';
-import { errorMessage } from '../utils/ui.js';
+import { notInitializedBanner } from '../utils/ui.js';
 
 async function streakCommand(options = {}) {
   const jerdPath = getJerdPath();
 
   // Check if jerd directory exists
   if (!(await fileExists(jerdPath))) {
-    errorMessage('Jerd not initialized. Run "jerd init" first.');
+    notInitializedBanner();
     process.exit(1);
   }
 
