@@ -5,7 +5,9 @@ import { loadTemplates, renderTemplate } from '../utils/template.js';
 import { ensureDirectory, fileExists, getJerdPath } from '../utils/file-system.js';
 import { openInEditor } from '../utils/editor.js';
 import { parseDate } from '../utils/date-utils.js';
-import { successMessage, errorMessage, createSpinner } from '../utils/ui.js';
+import { successMessage, errorMessage, createSpinner, gentleHint, celebrationLine } from '../utils/ui.js';
+import { MOOD_VALUES, MOOD_ORDER } from '../constants.js';
+import inquirer from 'inquirer';
 
 async function newCommand(dateArg, options = {}) {
   // Parse date or use today
@@ -53,20 +55,41 @@ async function newCommand(dateArg, options = {}) {
   const exists = await fileExists(filePath);
 
   if (!exists) {
+    // Ask for mood first if uiStyle is 'astro'
+    let mood = null;
+    if (config.uiStyle === 'astro') {
+      const moodChoices = MOOD_ORDER.map(m => ({
+        name: `${MOOD_VALUES[m].emoji} ${MOOD_VALUES[m].label}`,
+        value: m
+      }));
+
+      const response = await inquirer.prompt([{
+        type: 'list',
+        name: 'mood',
+        message: '💭 How are you feeling today?',
+        choices: moodChoices,
+        default: 'good'
+      }]);
+      mood = response.mood;
+    }
+
     // Show spinner while creating file
-    const spinner = createSpinner('✨ Creating journal entry...');
+    const spinner = createSpinner('✨ Creating your cozy entry...');
     spinner.start();
 
     // Create directory structure
     await ensureDirectory(monthPath);
 
-    // Render template
-    const content = renderTemplate(template, date);
+    // Render template with mood
+    const content = renderTemplate(template, date, mood);
 
     // Write file
     await fs.writeFile(filePath, content, 'utf8');
 
     spinner.succeed(`📝 Created ${filePath}`);
+
+    // Gentle encouragement
+    gentleHint('Take your time—your thoughts deserve space.');
   } else {
     successMessage(`📖 Opening existing entry: ${filePath}`);
   }
