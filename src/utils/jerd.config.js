@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { getJerdPath } from './file-system.js';
+import { notInitializedBanner } from './ui.js';
 
 export async function loadConfig() {
   const jerdPath = getJerdPath();
@@ -16,8 +17,7 @@ export async function loadConfig() {
     return config;
   } catch (error) {
     if (error.code === 'ENOENT') {
-      console.error('Error: No jerd project found in this directory or any parent directory.');
-      console.error('Run `jerd init` to create a new journal.');
+      notInitializedBanner();
       process.exit(1);
     }
     throw error;

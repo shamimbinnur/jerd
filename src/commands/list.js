@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { getJerdPath, fileExists } from '../utils/file-system.js';
-import { errorMessage, infoMessage, softHeader, gentleHint } from '../utils/ui.js';
+import { errorMessage, infoMessage, softHeader, gentleHint, notInitializedBanner } from '../utils/ui.js';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 
@@ -233,7 +233,7 @@ async function listCommand(args, options = {}) {
 
   // Check if jerd directory exists
   if (!(await fileExists(jerdPath))) {
-    errorMessage('Jerd not initialized. Run "jerd init" first.');
+    notInitializedBanner();
     process.exit(1);
   }
 

@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { getJerdPath, fileExists } from '../utils/file-system.js';
 import { getMoodDataForPeriod, getMoodDataForMonth } from '../utils/mood-data.js';
 import { renderWeeklyChart, renderMonthlyChart } from '../utils/mood-chart.js';
-import { errorMessage, gentleHint } from '../utils/ui.js';
+import { errorMessage, gentleHint, notInitializedBanner } from '../utils/ui.js';
 
 // Month name to number mapping
 const MONTH_NAMES = {
@@ -24,7 +24,7 @@ async function moodCommand(args = [], options = {}) {
 
   // Check if jerd directory exists
   if (!(await fileExists(jerdPath))) {
-    errorMessage('Jerd not initialized. Run "jerd init" first.');
+    notInitializedBanner();
     process.exit(1);
   }
 
