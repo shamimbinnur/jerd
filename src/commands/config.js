@@ -2,6 +2,7 @@ import inquirer from 'inquirer';
 import { loadConfig, updateConfig } from '../utils/jerd.config.js';
 import { createDefaultTemplates } from '../constants.js';
 import { createSpinner, successMessage, cyanText, boldText } from '../utils/ui.js';
+import { getAllThemes } from '../utils/theme.js';
 
 async function configCommand(options) {
   // Load current config
@@ -13,7 +14,8 @@ async function configCommand(options) {
   // If specific option flags are passed, only prompt for those
   const shouldPromptEditor = options.editor !== undefined;
   const shouldPromptTemplate = options.template !== undefined;
-  const shouldPromptAll = !shouldPromptEditor && !shouldPromptTemplate;
+  const shouldPromptTheme = options.theme !== undefined;
+  const shouldPromptAll = !shouldPromptEditor && !shouldPromptTemplate && !shouldPromptTheme;
 
   // Editor configuration
   if (shouldPromptAll || shouldPromptEditor) {
@@ -72,6 +74,29 @@ async function configCommand(options) {
     }
   }
 
+  // Theme configuration
+  if (shouldPromptAll || shouldPromptTheme) {
+    const themeChoices = getAllThemes().map(t => ({
+      name: `${t.icon || '🎨'} ${t.name} - ${t.description}`,
+      value: t.value || t.name.toLowerCase()
+    }));
+
+    // Fallback if currentTheme is undefined in config
+    const currentThemeVal = currentConfig.theme || 'cozy';
+
+    const { theme } = await inquirer.prompt([{
+      type: 'list',
+      name: 'theme',
+      message: `🎨 Choose your visual theme (current: ${cyanText(currentThemeVal)}):`,
+      choices: themeChoices,
+      default: currentThemeVal
+    }]);
+
+    if (theme !== currentConfig.theme) {
+      updates.theme = theme;
+    }
+  }
+
   // If no changes were made
   if (Object.keys(updates).length === 0) {
     console.log('\nNo changes made to configuration.');
@@ -93,6 +118,9 @@ async function configCommand(options) {
   }
   if (updates.defaultTemplate) {
     successMessage(`✓ Default template: ${cyanText(updates.defaultTemplate)}`);
+  }
+  if (updates.theme) {
+    successMessage(`✓ Theme: ${cyanText(updates.theme)}`);
   }
   console.log();
 }

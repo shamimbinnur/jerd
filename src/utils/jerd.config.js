@@ -3,7 +3,7 @@ import { join } from 'path';
 import { getJerdPath } from './file-system.js';
 import { notInitializedBanner } from './ui.js';
 
-export async function loadConfig() {
+export async function loadConfig(options = { exitOnError: true }) {
   const jerdPath = getJerdPath();
   const configPath = join(jerdPath, 'jerd.config.js');
 
@@ -14,11 +14,18 @@ export async function loadConfig() {
     if (!config.uiStyle) {
       config.uiStyle = 'astro';
     }
+    if (!config.theme) {
+      config.theme = 'cozy';
+    }
     return config;
   } catch (error) {
     if (error.code === 'ENOENT') {
-      notInitializedBanner();
-      process.exit(1);
+      if (options.exitOnError) {
+        notInitializedBanner();
+        process.exit(1);
+      } else {
+        return null; // Return null if config missing and not exiting
+      }
     }
     throw error;
   }

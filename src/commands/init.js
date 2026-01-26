@@ -3,7 +3,7 @@ import { join, relative } from 'path';
 import inquirer from 'inquirer';
 import { getJerdPath, ensureDirectory, fileExists } from '../utils/file-system.js';
 import { createDefaultTemplates } from '../constants.js';
-import { welcomeBanner, warningMessage, createSpinner, cozyBox, cyanText, boldText, softHeader, stepLine, celebrationLine, gentleHint } from '../utils/ui.js';
+import { welcomeBanner, warningMessage, createSpinner, cozyBox, cyanText, boldText, softHeader, stepLine, celebrationLine } from '../utils/ui.js';
 
 async function initCommand(projectPath) {
   // Show welcome banner
@@ -37,7 +37,7 @@ async function initCommand(projectPath) {
 
   // Step 1: Choose editor
   stepLine(1, 3, 'Choose your favorite editor');
-  
+
   const editorChoices = [
     { name: '📝 nano (Default)', value: 'nano' },
     { name: '⌨️  vim', value: 'vim' },
@@ -69,7 +69,7 @@ async function initCommand(projectPath) {
 
   // Step 2: Choose template
   stepLine(2, 3, 'Pick your default template');
-  
+
   const defaultTemplatesData = createDefaultTemplates();
   const templateChoices = defaultTemplatesData.templates.map(t => ({
     name: `${t.name} - ${t.description}`,
@@ -86,7 +86,7 @@ async function initCommand(projectPath) {
 
   // Step 3: Create configuration
   stepLine(3, 3, 'Creating your cozy setup');
-  
+
   // Show spinner while creating files
   const spinner = createSpinner('✨ Setting up your journal...');
   spinner.start();
@@ -111,6 +111,14 @@ async function initCommand(projectPath) {
 
   celebrationLine();
 
+  // Calculate path relative to CWD for the "cd" hint
+  const cwd = process.cwd();
+  let cdHint = "";
+  if (jerdPath !== cwd) {
+    const relativePath = relative(cwd, jerdPath);
+    cdHint = `\n  ${cyanText(`cd ${relativePath}`)}             📂 Go to project folder`;
+  }
+
   // Show success box with next steps
   const successText = `${boldText('🌟 Welcome to your cozy journal!')}
 
@@ -119,20 +127,13 @@ async function initCommand(projectPath) {
 ✓ Editor: ${cyanText(editor)}
 ✓ Default template: ${cyanText(defaultTemplate)}
 
-${boldText('📚 Your first steps:')}
+${boldText('📚 Your first steps:')}${cdHint}
   ${cyanText('jerd new')}              ✍️  Create today's entry
   ${cyanText('jerd new yesterday')}    📅 Create yesterday's entry
   ${cyanText('jerd new -t work')}      💼 Use work template
   ${cyanText('jerd new -e vim')}       ⌨️  Override editor`;
 
   cozyBox(successText);
-
-  // Show cd instruction if jerd was created in a subdirectory
-  const cwd = process.cwd();
-  if (jerdPath !== cwd) {
-    const relativePath = relative(cwd, jerdPath);
-    gentleHint(`cd '${relativePath}' to start journaling`);
-  }
 }
 
 export default initCommand;
