@@ -13,6 +13,7 @@ Jerd follows a folder-based hierarchy and uses Markdown for journal files, which
 - Simple, filesystem-based journal management
 - Predictable structure: `Jerd/YYYY/YYYY-MM/YYYY-MM-DD.md`
 - Customizable templates via JSON
+- **Customizable themes** - Choose from Cozy, Neon, or Minimal themes
 - Cross-platform support (macOS, Linux, Windows)
 - Opens entries in your preferred editor
 
@@ -76,6 +77,18 @@ jerd list
 jerd list 2025
 jerd list december
 jerd list dec 2024
+```
+
+### 5. Customize Your Experience
+
+```bash
+# Configure editor, template, and theme
+jerd config
+
+# Choose from beautiful themes:
+# - Cozy (default): Warm purple and amber tones
+# - Neon: Cyberpunk-inspired high contrast
+# - Minimal: Clean monochrome design
 ```
 
 ## Commands
@@ -217,6 +230,42 @@ jerd list dec 2024
 jerd list feb 2023
 ```
 
+### `jerd config [--editor] [--template] [--theme]`
+
+Interactive configuration for Jerd settings.
+
+**Options:**
+
+- `-e, --editor` - Configure editor only
+- `-t, --template` - Configure default template only
+- `--theme` - Configure theme only
+- No options - Configure all settings
+
+**Behavior:**
+
+- Presents an interactive menu to configure settings
+- Updates `jerd.config.js` with your preferences
+- Changes take effect immediately
+
+**Available Themes:**
+
+- **Cozy** (Default) - Warm purple and amber tones with rounded borders
+- **Neon** - Cyberpunk-inspired with high-contrast green and magenta
+- **Minimal** - Clean, monochrome design with blue accents
+
+**Examples:**
+
+```bash
+# Configure all settings
+jerd config
+
+# Configure only editor
+jerd config --editor
+
+# Configure only theme
+jerd config --theme
+```
+
 **Supported Month Names:**
 
 - Full names: january, february, march, april, may, june, july, august, september, october, november, december
@@ -310,16 +359,27 @@ Jerd/
 
 ## Configuration
 
-### jerd.config.json
+### jerd.config.js
 
 ```json
 {
   "editor": "nano",
   "jerdPath": "./jerd",
   "dateFormat": "YYYY-MM-DD",
-  "defaultTemplate": "default"
+  "defaultTemplate": "default",
+  "theme": "cozy",
+  "uiStyle": "astro"
 }
 ```
+
+**Configuration Options:**
+
+- `editor` - Your preferred text editor (nano, vim, code, etc.)
+- `jerdPath` - Path to journal directory (default: `./jerd`)
+- `dateFormat` - Date format for file names (default: `YYYY-MM-DD`)
+- `defaultTemplate` - Default template to use for new entries
+- `theme` - Visual theme (cozy, neon, or minimal)
+- `uiStyle` - UI style (default: `astro`)
 
 ### templates.json
 
