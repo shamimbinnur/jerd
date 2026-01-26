@@ -1,21 +1,10 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { getJerdPath, fileExists } from '../utils/file-system.js';
-import { errorMessage, infoMessage, softHeader, gentleHint, notInitializedBanner } from '../utils/ui.js';
-import chalk from 'chalk';
+import { errorMessage, infoMessage, softHeader, gentleHint, notInitializedBanner, currentTheme } from '../utils/ui.js';
 import dayjs from 'dayjs';
 
-// Cozy icons
-const ICONS = {
-  folder: '📁',
-  year: '📅',
-  month: '📆',
-  file: '📝',
-  tree: '├──',
-  treeLast: '└──',
-  treeVertical: '│  ',
-  treeSpace: '   '
-};
+// ICONS handled via currentTheme.icons inside functions to support dynamic switching
 
 // Month names for display
 const MONTH_NAMES_DISPLAY = {
@@ -91,10 +80,11 @@ async function isDirectory(path) {
  * Prints a tree structure for a single month
  */
 async function printMonth(monthPath, monthFolderName, prefix = '', isLast = true) {
+  const ICONS = currentTheme.icons;
   const monthNumber = extractMonthNumber(monthFolderName);
   const monthName = monthNumber ? MONTH_NAMES_DISPLAY[monthNumber] : monthFolderName;
   const connector = isLast ? ICONS.treeLast : ICONS.tree;
-  const monthColor = chalk.hex('#8b5cf6').bold(monthName);
+  const monthColor = currentTheme.colors.primaryBold(monthName);
 
   console.log(`${prefix}${connector} ${ICONS.month} ${monthColor}`);
 
@@ -107,7 +97,7 @@ async function printMonth(monthPath, monthFolderName, prefix = '', isLast = true
   journalFiles.forEach((file, index) => {
     const isLastFile = index === journalFiles.length - 1;
     const fileConnector = isLastFile ? ICONS.treeLast : ICONS.tree;
-    const fileName = chalk.hex('#10b981')(file.name);
+    const fileName = currentTheme.colors.success(file.name);
     console.log(`${childPrefix}${fileConnector} ${ICONS.file} ${fileName}`);
   });
 }
@@ -116,8 +106,9 @@ async function printMonth(monthPath, monthFolderName, prefix = '', isLast = true
  * Prints a tree structure for a single year
  */
 async function printYear(yearPath, year, prefix = '', isLast = true) {
+  const ICONS = currentTheme.icons;
   const connector = isLast ? ICONS.treeLast : ICONS.tree;
-  const yearColor = chalk.hex('#f59e0b').bold(year);
+  const yearColor = currentTheme.colors.accentBold(year);
 
   console.log(`${prefix}${connector} ${ICONS.year} ${yearColor}`);
 
@@ -162,6 +153,7 @@ async function printFullTree(jerdPath) {
  * Prints entries for a specific month and year
  */
 async function printMonthEntries(jerdPath, monthNumber, year) {
+  const ICONS = currentTheme.icons;
   const yearPath = join(jerdPath, year);
   const monthFolderName = `${year}-${monthNumber}`;
   const monthPath = join(yearPath, monthFolderName);
@@ -185,7 +177,7 @@ async function printMonthEntries(jerdPath, monthNumber, year) {
   journalFiles.forEach((file, index) => {
     const isLast = index === journalFiles.length - 1;
     const connector = isLast ? ICONS.treeLast : ICONS.tree;
-    const fileName = chalk.green(file.name);
+    const fileName = currentTheme.colors.success(file.name);
     console.log(`${connector} ${ICONS.file} ${fileName}`);
   });
 
@@ -196,6 +188,7 @@ async function printMonthEntries(jerdPath, monthNumber, year) {
  * Prints entries for a specific year
  */
 async function printYearEntries(jerdPath, year) {
+  const ICONS = currentTheme.icons;
   const yearPath = join(jerdPath, year);
 
   if (!(await fileExists(yearPath)) || !(await isDirectory(yearPath))) {

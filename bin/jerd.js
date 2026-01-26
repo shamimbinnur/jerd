@@ -12,7 +12,8 @@ import streakCommand from "../src/commands/streak.js";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { gradientTitle, dimText, landingScreen } from "../src/utils/ui.js";
+import { gradientTitle, dimText, landingScreen, setTheme } from "../src/utils/ui.js";
+import { loadConfig } from "../src/utils/jerd.config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -160,6 +161,16 @@ async function main() {
   if (!hasArgs) {
     await landingScreen();
     return;
+  }
+
+  // Load theme preference before parsing commands
+  try {
+    const config = await loadConfig({ exitOnError: false });
+    if (config && config.theme) {
+      setTheme(config.theme);
+    }
+  } catch (e) {
+    // Ignore errors here, default theme will be used
   }
 
   program.parse(process.argv);

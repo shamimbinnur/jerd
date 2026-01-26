@@ -1,0 +1,65 @@
+{
+  "templates": [
+    {
+      "name": "default",
+      "description": "Full morning/evening reflection with goals",
+      "tags": [
+        "daily",
+        "reflection"
+      ],
+      "sections": [
+        {
+          "type": "text",
+          "title": "📖 Daily Journal - {{date}}",
+          "content": ""
+        },
+        {
+          "type": "text",
+          "title": "🌅 Morning Reflection",
+          "content": "- How do I feel this morning?\n- Top 3 priorities today:\n  1. \n  2. \n  3. "
+        },
+        {
+          "type": "text",
+          "title": "🙏 Gratitude",
+          "content": "- 3 things I'm grateful for today:\n  1. \n  2. \n  3. "
+        },
+        {
+          "type": "text",
+          "title": "🎯 Daily Goals",
+          "content": "- Goal 1: \n- Goal 2: \n- Goal 3: "
+        },
+        {
+          "type": "text",
+          "title": "🌙 Evening Reflection",
+          "content": "- Wins today: \n- How do I feel tonight? \n- Any adjustments for tomorrow?"
+        },
+        {
+          "type": "text",
+          "title": "📚 What I Learned Today",
+          "content": "- "
+        },
+        {
+          "type": "text",
+          "title": "📌 Important Things to Remember",
+          "content": "- "
+        }
+      ]
+    },
+    {
+      "name": "blank",
+      "description": "Minimal blank template",
+      "sections": [
+        {
+          "type": "auto-date",
+          "title": "📅 Date",
+          "format": "dddd, MMMM D, YYYY"
+        },
+        {
+          "type": "text",
+          "title": "📝 Notes",
+          "content": ""
+        }
+      ]
+    }
+  ]
+}
