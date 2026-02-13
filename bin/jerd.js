@@ -12,7 +12,12 @@ import streakCommand from "../src/commands/streak.js";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { gradientTitle, dimText, landingScreen, setTheme } from "../src/utils/ui.js";
+import {
+  gradientTitle,
+  dimText,
+  landingScreen,
+  setTheme,
+} from "../src/utils/ui.js";
 import { loadConfig } from "../src/utils/jerd.config.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -158,19 +163,19 @@ program
 
 async function main() {
   const hasArgs = process.argv.slice(2).length > 0;
-  if (!hasArgs) {
-    await landingScreen();
-    return;
-  }
-
-  // Load theme preference before parsing commands
+  // Load theme preference once so both landing screen and commands
+  // respect the user's configured theme when available.
+  let config = null;
   try {
-    const config = await loadConfig({ exitOnError: false });
-    if (config && config.theme) {
-      setTheme(config.theme);
-    }
+    config = await loadConfig({ exitOnError: false });
+    if (config && config.theme) setTheme(config.theme);
   } catch (e) {
     // Ignore errors here, default theme will be used
+  }
+
+  if (!hasArgs) {
+    await landingScreen({ config });
+    return;
   }
 
   program.parse(process.argv);
