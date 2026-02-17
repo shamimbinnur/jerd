@@ -1,11 +1,11 @@
-import { promises as fs, accessSync } from 'fs';
-import { join, resolve, basename } from 'path';
+import { promises as fs, accessSync } from "fs";
+import { join, resolve } from "path";
 
 export async function ensureDirectory(dirPath) {
   try {
     await fs.mkdir(dirPath, { recursive: true });
   } catch (error) {
-    if (error.code !== 'EEXIST') {
+    if (error.code !== "EEXIST") {
       throw error;
     }
   }
@@ -22,7 +22,7 @@ function findProjectRoot(startDir = process.cwd()) {
   const maxLevels = 3; // Supports: item (0), month (1), year (2), jerd root (3)
 
   for (let level = 0; level <= maxLevels; level++) {
-    const configPath = join(currentDir, 'jerd.config.js');
+    const configPath = join(currentDir, "jerd.config.js");
 
     // Synchronously check if config exists in current directory
     try {
@@ -38,7 +38,7 @@ function findProjectRoot(startDir = process.cwd()) {
     }
 
     // Move up one directory
-    const parentDir = resolve(currentDir, '..');
+    const parentDir = resolve(currentDir, "..");
 
     // Safety check: prevent infinite loop and check for filesystem root
     if (parentDir === currentDir) {
@@ -53,7 +53,7 @@ function findProjectRoot(startDir = process.cwd()) {
 
 export function getJerdPath(projectPath = null) {
   // If path is '.', use current directory directly (don't create subdirectory)
-  if (projectPath === '.') {
+  if (projectPath === ".") {
     return process.cwd();
   }
 
@@ -68,20 +68,12 @@ export function getJerdPath(projectPath = null) {
 
     // Not found - fallback to legacy behavior (./jerd subdirectory)
     // This maintains backward compatibility
-    return join(process.cwd(), 'jerd');
+    return join(process.cwd(), "jerd");
   }
 
-  // Otherwise resolve the provided path
-  const resolvedPath = resolve(projectPath);
-
-  // If the path already ends with 'jerd' or 'Jerd', use it directly
-  const dirName = basename(resolvedPath).toLowerCase();
-  if (dirName === 'jerd') {
-    return resolvedPath;
-  }
-
-  // Otherwise, append 'jerd' to the path
-  return join(resolvedPath, 'jerd');
+  // Otherwise resolve the provided path and use it directly
+  // When user specifies a custom directory name, that directory IS the jerd project
+  return resolve(projectPath);
 }
 
 export async function fileExists(filePath) {
