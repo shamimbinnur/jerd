@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import initCommand from "../src/commands/init.js";
-import newCommand from "../src/commands/new.js";
-import openCommand from "../src/commands/open.js";
-import configCommand from "../src/commands/config.js";
-import listCommand from "../src/commands/list.js";
-import moodCommand from "../src/commands/mood.js";
-import delCommand from "../src/commands/del.js";
-import streakCommand from "../src/commands/streak.js";
+import initCommand from "../legacy_src/commands/init.js";
+import newCommand from "../legacy_src/commands/new.js";
+import openCommand from "../legacy_src/commands/open.js";
+import configCommand from "../legacy_src/commands/config.js";
+import listCommand from "../legacy_src/commands/list.js";
+import moodCommand from "../legacy_src/commands/mood.js";
+import delCommand from "../legacy_src/commands/del.js";
+import streakCommand from "../legacy_src/commands/streak.js";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -17,8 +17,8 @@ import {
   dimText,
   landingScreen,
   setTheme,
-} from "../src/utils/ui.js";
-import { loadConfig } from "../src/utils/jerd.config.js";
+} from "../legacy_src/utils/ui.js";
+import { loadConfig } from "../legacy_src/utils/jerd.config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
