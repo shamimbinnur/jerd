@@ -23,6 +23,7 @@ jerd init my-journal
 ```
 
 ---
+
 ## Navigation
 
 **Next:** [Quick Start](quick-start.md)

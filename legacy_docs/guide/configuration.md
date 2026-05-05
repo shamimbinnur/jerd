@@ -18,6 +18,7 @@ This opens an interactive configuration menu where you can update preferences wi
 - Other preferences exposed by the CLI
 
 ---
+
 ## Navigation
 
 **Previous:** [Usage](usage.md)  

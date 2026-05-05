@@ -67,6 +67,7 @@ jerd config
 ```
 
 ---
+
 ## Navigation
 
 **Previous:** [Configuration](../guide/configuration.md)  

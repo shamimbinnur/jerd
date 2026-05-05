@@ -25,6 +25,7 @@ jerd open today
 That’s all you need to begin.
 
 ---
+
 ## Navigation
 
 **Previous:** [Installation](installation.md)  

@@ -29,6 +29,7 @@ jerd/
 This predictable layout keeps your journal portable, searchable, and easy to back up.
 
 ---
+
 ## Navigation
 
 **Previous:** [Commands](commands.md)

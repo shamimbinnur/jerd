@@ -1,14 +1,14 @@
-import { promises as fs, accessSync } from "fs";
-import { join, resolve } from "path";
+import {promises as fs, accessSync} from 'fs';
+import {join, resolve} from 'path';
 
 export async function ensureDirectory(dirPath) {
-  try {
-    await fs.mkdir(dirPath, { recursive: true });
-  } catch (error) {
-    if (error.code !== "EEXIST") {
-      throw error;
-    }
-  }
+	try {
+		await fs.mkdir(dirPath, {recursive: true});
+	} catch (error) {
+		if (error.code !== 'EEXIST') {
+			throw error;
+		}
+	}
 }
 
 /**
@@ -18,69 +18,69 @@ export async function ensureDirectory(dirPath) {
  * @returns {string|null} - Path to project root, or null if not found
  */
 function findProjectRoot(startDir = process.cwd()) {
-  let currentDir = resolve(startDir);
-  const maxLevels = 3; // Supports: item (0), month (1), year (2), jerd root (3)
+	let currentDir = resolve(startDir);
+	const maxLevels = 3; // Supports: item (0), month (1), year (2), jerd root (3)
 
-  for (let level = 0; level <= maxLevels; level++) {
-    const configPath = join(currentDir, "jerd.config.js");
+	for (let level = 0; level <= maxLevels; level++) {
+		const configPath = join(currentDir, 'jerd.config.js');
 
-    // Synchronously check if config exists in current directory
-    try {
-      accessSync(configPath);
-      return currentDir; // Found it!
-    } catch {
-      // Config not found, continue traversing
-    }
+		// Synchronously check if config exists in current directory
+		try {
+			accessSync(configPath);
+			return currentDir; // Found it!
+		} catch {
+			// Config not found, continue traversing
+		}
 
-    // If we've checked maxLevels, stop
-    if (level === maxLevels) {
-      return null; // Not found within allowed range
-    }
+		// If we've checked maxLevels, stop
+		if (level === maxLevels) {
+			return null; // Not found within allowed range
+		}
 
-    // Move up one directory
-    const parentDir = resolve(currentDir, "..");
+		// Move up one directory
+		const parentDir = resolve(currentDir, '..');
 
-    // Safety check: prevent infinite loop and check for filesystem root
-    if (parentDir === currentDir) {
-      return null;
-    }
+		// Safety check: prevent infinite loop and check for filesystem root
+		if (parentDir === currentDir) {
+			return null;
+		}
 
-    currentDir = parentDir;
-  }
+		currentDir = parentDir;
+	}
 
-  return null;
+	return null;
 }
 
 export function getJerdPath(projectPath = null) {
-  // If path is '.', use current directory directly (don't create subdirectory)
-  if (projectPath === ".") {
-    return process.cwd();
-  }
+	// If path is '.', use current directory directly (don't create subdirectory)
+	if (projectPath === '.') {
+		return process.cwd();
+	}
 
-  // If no path provided, find project root via parent directory traversal
-  if (!projectPath) {
-    const projectRoot = findProjectRoot();
+	// If no path provided, find project root via parent directory traversal
+	if (!projectPath) {
+		const projectRoot = findProjectRoot();
 
-    if (projectRoot) {
-      // Found jerd.config.js in this directory or a parent (within 3 levels)
-      return projectRoot;
-    }
+		if (projectRoot) {
+			// Found jerd.config.js in this directory or a parent (within 3 levels)
+			return projectRoot;
+		}
 
-    // Not found - fallback to legacy behavior (./jerd subdirectory)
-    // This maintains backward compatibility
-    return join(process.cwd(), "jerd");
-  }
+		// Not found - fallback to legacy behavior (./jerd subdirectory)
+		// This maintains backward compatibility
+		return join(process.cwd(), 'jerd');
+	}
 
-  // Otherwise resolve the provided path and use it directly
-  // When user specifies a custom directory name, that directory IS the jerd project
-  return resolve(projectPath);
+	// Otherwise resolve the provided path and use it directly
+	// When user specifies a custom directory name, that directory IS the jerd project
+	return resolve(projectPath);
 }
 
 export async function fileExists(filePath) {
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
+	try {
+		await fs.access(filePath);
+		return true;
+	} catch {
+		return false;
+	}
 }
