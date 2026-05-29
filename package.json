@@ -16,7 +16,9 @@
 		"dist"
 	],
 	"dependencies": {
+		"@inkjs/ui": "^1.0.0",
 		"ink": "^4.1.0",
+		"ink-big-text": "^2.0.0",
 		"meow": "^11.0.0",
 		"react": "^18.2.0"
 	},
@@ -47,8 +49,13 @@
 	"xo": {
 		"extends": "xo-react",
 		"prettier": true,
+		"ignores": [
+			"legacy_bin/**",
+			"legacy_src/**"
+		],
 		"rules": {
-			"react/prop-types": "off"
+			"react/prop-types": "off",
+			"unicorn/expiring-todo-comments": "off"
 		}
 	},
 	"prettier": "@vdemedes/prettier-config"

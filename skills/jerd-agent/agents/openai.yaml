@@ -1,0 +1,5 @@
+interface:
+  display_name: 'Jerd Agent'
+  short_description: 'Guide for evolving the jerd TUI'
+  brand_color: '#FF7A1A'
+  default_prompt: 'Use $jerd-agent to update the jerd terminal UI consistently.'
