@@ -2,33 +2,76 @@
 
 [Getting Started](../getting-started/installation.md) · [Guide](../guide/usage.md) · [Reference](commands.md)
 
-Jerd stores entries as plain Markdown files on your filesystem.
+Jerd stores journals as plain Markdown files grouped by year and month name.
 
-## Default layout
+## Project Layout
 
-After initialization, Jerd creates a structure like:
-
-```
+```text
 jerd/
-  2025/
-    02/
-      2025-02-01.md
-      2025-02-02.md
-      ...
-  config.json
+  jerd.config.json
+  2026/
+    june/
+      2026_june_04.md
 ```
 
-## Rules
+## Entry Paths
 
-- Entries are stored as: `YYYY/YYYY-MM/YYYY-MM-DD.md`
-- Each year is a directory
-- Each month is a directory
-- Each day is a single Markdown file
-- `config.json` stores your preferences
+New entries use this path format:
 
-This predictable layout keeps your journal portable, searchable, and easy to back up.
+```text
+YYYY/month-name/YYYY_month-name_DD.md
+```
 
+For example:
+
+```text
+2026/june/2026_june_04.md
+```
+
+Month directory names are lowercase English names: `january`, `february`,
+`march`, and so on.
+
+## Entry Content
+
+Entries are Markdown. Mood is stored in YAML-style frontmatter when a mood is
+selected:
+
+```markdown
 ---
+mood: calm
+---
+
+Today I wrote from the terminal.
+```
+
+Search also reads optional frontmatter tags. Inline and list-style tags are
+recognized:
+
+```markdown
+---
+tags: [work, planning]
+---
+```
+
+```markdown
+---
+tags:
+  - work
+  - planning
+---
+```
+
+## Legacy Entry Names
+
+Jerd can still read older entry names in this format:
+
+```text
+YYYY/month-name/YYYY-MM-DD.md
+```
+
+When both modern and legacy files exist for the same day, Jerd prefers the
+modern `YYYY_month-name_DD.md` file.
+
 ## Navigation
 
 **Previous:** [Commands](commands.md)

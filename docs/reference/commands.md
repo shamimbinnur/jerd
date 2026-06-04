@@ -2,71 +2,86 @@
 
 [Getting Started](../getting-started/installation.md) · [Guide](../guide/usage.md) · [Reference](commands.md)
 
-This page lists the primary Jerd commands.
+## `jerd`
 
-## `jerd init`
+Open the interactive home screen from an initialized project.
 
-Initialize a journal directory.
+```bash
+jerd
+```
+
+If the current directory is not initialized, this starts the init flow.
+
+## `jerd init [directory]`
+
+Initialize a journal project.
 
 ```bash
 jerd init
+jerd init .
 jerd init my-journal
 ```
 
+When no directory is provided, Jerd creates a `jerd` directory under the current
+directory. Passing `.` currently follows the same default and also targets a
+`jerd` directory. Passing another name initializes that directory.
+
 ## `jerd new`
 
-Create a journal entry (defaults to today).
+Open today's entry in your editor.
 
 ```bash
 jerd new
-jerd new yesterday
-jerd new 2025-02-13
-jerd new 25
-jerd new 25 july
 ```
 
-## `jerd open`
+Entries are saved in replace mode for the current day, so editing an existing
+entry updates that day's Markdown file.
 
-Open an existing entry.
+## `jerd find`
+
+Open the interactive search screen.
 
 ```bash
-jerd open today
-jerd open 2025-02-13
+jerd find
 ```
 
-## `jerd del`
+Use Enter to open the selected result in your editor.
 
-Delete an entry.
+## `jerd cal`
+
+Open the current month calendar.
 
 ```bash
-jerd del today
+jerd cal
 ```
+
+Use Enter to open the selected day when that day has an entry.
 
 ## `jerd mood`
 
-Show a mood graph over time.
+Open the mood graph.
 
 ```bash
 jerd mood
 ```
 
-## `jerd streak`
+Use left and right arrows to move between months.
 
-Show a streak/activity graph across months.
+## `--screen`
 
-```bash
-jerd streak
-```
-
-## `jerd config`
-
-Open interactive configuration.
+Render a specific internal screen. This is mainly useful for development and
+testing.
 
 ```bash
-jerd config
+jerd --screen=home
+jerd --screen=find
+jerd --screen=mood-tracker
 ```
 
----
+Supported values are `home`, `calendar`, `find`, `mood-tracker`, `init`,
+`project-init`, `loading`, `success`, `dashboard`, `confirmation`, `farewell`,
+and `new-entry`.
+
 ## Navigation
 
 **Previous:** [Configuration](../guide/configuration.md)  

@@ -2,27 +2,48 @@
 
 [Getting Started](installation.md) · [Guide](../guide/usage.md) · [Reference](../reference/commands.md)
 
+## Requirements
+
+Jerd requires Node.js 16 or newer.
+
 ## Install Globally
 
 ```bash
-npm install -g jerd
+npm install --global jerd
 ```
 
-## Initialize a Journal Directory
+After installation, verify the CLI is available:
 
 ```bash
-jerd init
+jerd --help
 ```
 
-By default, Jerd creates a directory named `jerd`.
+## Local Development
 
-You can provide a custom folder name:
+From the repository root:
 
 ```bash
-jerd init my-journal
+npm install
+npm run build
+node dist/cli.js --help
 ```
 
----
+During development you can keep TypeScript compiling in watch mode:
+
+```bash
+npm run dev
+```
+
+## Editor Setup
+
+Jerd opens entries in your terminal editor. It resolves the editor in this order:
+
+1. The `EDITOR` environment variable.
+2. The `editor` value in `jerd.config.json`.
+3. `vim` as the runtime fallback.
+
+The generated project config currently defaults `editor` to `nvim`.
+
 ## Navigation
 
 **Next:** [Quick Start](quick-start.md)

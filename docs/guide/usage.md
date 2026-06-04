@@ -2,62 +2,92 @@
 
 [Getting Started](../getting-started/installation.md) · [Guide](usage.md) · [Reference](../reference/commands.md)
 
-## Create a Journal Entry
+Jerd is interactive by default. Run commands from an initialized journal
+directory unless you are creating a new project with `jerd init`.
+
+## Home
+
+```bash
+jerd
+```
+
+If the current directory has `jerd.config.json` or the legacy
+`jerd.config.js`, Jerd opens the home screen. If no config is found, Jerd starts
+the init flow.
+
+Home shortcuts:
+
+- `w`: write a new entry.
+- `f`: find entries.
+- `c`: open the calendar.
+- `m`: open the mood graph.
+
+## Write
 
 ```bash
 jerd new
 ```
 
-You can pass a date as an argument to create an entry for a specific day.
+Jerd opens today's entry in your configured editor. If an entry already exists
+for today, the editor opens with the existing content and saves it back in place.
 
-### Supported date formats
+Before opening the editor, the interactive home flow asks for a mood:
 
-- Relative: `today`, `yesterday`
-- ISO: `YYYY-MM-DD`
-- Day only: `25`
-- Day + month: `25 july`
+- `H`: happy
+- `C`: calm
+- `N`: neutral
+- `S`: sad
+- `A`: angry
 
+Mood is stored in Markdown frontmatter:
+
+```markdown
 ---
-
-## Open an Entry
-
-```bash
-jerd open today
+mood: happy
+---
 ```
 
-Accepts any supported date format.
-
----
-
-## Delete an Entry
+## Find
 
 ```bash
-jerd del today
+jerd find
 ```
 
-Accepts any supported date format.
+Search supports:
 
----
+- Empty query: newest entries first.
+- Date aliases: `today`, `yesterday`.
+- Relative dates: `3 days ago`, `3 days before`.
+- ISO dates: `2026-05-31`.
+- Text search across path, preview, content, and frontmatter tags.
+
+Use the up and down arrows to select a result, then press Enter to open it in
+your editor. Press Escape to return home.
+
+## Calendar
+
+```bash
+jerd cal
+```
+
+The calendar shows the current month. Days with entries are highlighted.
+
+- Arrow keys move the selected day.
+- Enter opens the selected day's entry if one exists.
+- Escape returns home.
 
 ## Mood Graph
-
-Visualize your mood history in the terminal.
 
 ```bash
 jerd mood
 ```
 
----
+The mood graph shows the selected month with days colored by the mood saved in
+each entry's frontmatter.
 
-## Streak Graph
+- Left and right arrows move between months.
+- Escape returns home.
 
-Track journaling consistency across months.
-
-```bash
-jerd streak
-```
-
----
 ## Navigation
 
 **Previous:** [Quick Start](../getting-started/quick-start.md)  

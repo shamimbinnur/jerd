@@ -1,43 +1,68 @@
 {
-  "name": "jerd",
-  "description": "A terminal-first journaling tool that syncs just fine with your favourite editors — Vim to VS Code",
-  "author": {
-    "name": "Shamim Bin Nur"
-  },
-  "version": "2.2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/shamimbinnur/jerd.git"
-  },
-  "main": "src/index.js",
-  "type": "module",
-  "bin": {
-    "jerd": "./bin/jerd.js"
-  },
-  "scripts": {
-    "test": "echo \"No tests yet\"",
-    "dev": "node bin/jerd.js"
-  },
-  "keywords": [
-    "journal",
-    "markdown",
-    "cli",
-    "diary",
-    "notes"
-  ],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "boxen": "^7.1.1",
-    "chalk": "^5.3.0",
-    "commander": "^11.1.0",
-    "dayjs": "^1.11.10",
-    "figlet": "^1.9.4",
-    "gradient-string": "^2.0.2",
-    "inquirer": "^9.2.12",
-    "ora": "^8.0.1"
-  },
-  "engines": {
-    "node": ">=14.0.0"
-  }
+	"name": "jerd",
+	"version": "2.0.0",
+	"license": "MIT",
+	"bin": "dist/cli.js",
+	"type": "module",
+	"imports": {
+		"#screens/*": {
+			"types": "./source/screens/*",
+			"default": "./dist/screens/*"
+		}
+	},
+	"engines": {
+		"node": ">=16"
+	},
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"test": "prettier --check . && xo && ava"
+	},
+	"files": [
+		"dist"
+	],
+	"dependencies": {
+		"@inkjs/ui": "^1.0.0",
+		"ink": "^4.1.0",
+		"ink-big-text": "^2.0.0",
+		"meow": "^11.0.0",
+		"react": "^18.2.0"
+	},
+	"devDependencies": {
+		"@sindresorhus/tsconfig": "^3.0.1",
+		"@types/react": "^18.0.32",
+		"@vdemedes/prettier-config": "^2.0.1",
+		"ava": "^5.2.0",
+		"chalk": "^5.2.0",
+		"eslint-config-xo-react": "^0.27.0",
+		"eslint-plugin-react": "^7.32.2",
+		"eslint-plugin-react-hooks": "^4.6.0",
+		"ink-testing-library": "^3.0.0",
+		"prettier": "^2.8.7",
+		"ts-node": "^10.9.1",
+		"typescript": "^5.0.3",
+		"xo": "^0.53.1"
+	},
+	"ava": {
+		"extensions": {
+			"ts": "module",
+			"tsx": "module"
+		},
+		"nodeArguments": [
+			"--loader=ts-node/esm"
+		]
+	},
+	"xo": {
+		"extends": "xo-react",
+		"prettier": true,
+		"ignores": [
+			"legacy_bin/**",
+			"legacy_src/**"
+		],
+		"rules": {
+			"react/prop-types": "off",
+			"unicorn/expiring-todo-comments": "off"
+		}
+	},
+	"prettier": "@vdemedes/prettier-config"
 }
