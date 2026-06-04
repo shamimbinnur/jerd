@@ -12,12 +12,20 @@ const cli = meow(
 	Usage
 	  $ jerd
 	  $ jerd init [directory]
+	  $ jerd new
+	  $ jerd find
+	  $ jerd cal
+	  $ jerd mood
 
 	Options
-		--screen  Screen to render: home, init, project-init, loading, success, dashboard, confirmation, or farewell
+		--screen  Screen to render: home, calendar, find, mood-tracker, init, project-init, loading, success, dashboard, confirmation, farewell, or new-entry
 
 	Examples
 	  $ jerd
+	  $ jerd new
+	  $ jerd find
+	  $ jerd cal
+	  $ jerd mood
 	  $ jerd init
 	  $ jerd init .
 	  $ jerd init my-journal

@@ -1,25 +1,40 @@
 import {resolveInitTarget} from './init-target.js';
 
 export type StartupScreen =
+	| 'calendar'
 	| 'confirmation'
 	| 'dashboard'
 	| 'farewell'
+	| 'find'
 	| 'home'
 	| 'init'
 	| 'loading'
+	| 'new-entry'
+	| 'mood-tracker'
 	| 'project-init'
 	| 'success';
 
 const screens = [
+	'calendar',
 	'confirmation',
 	'dashboard',
 	'farewell',
+	'find',
 	'home',
 	'init',
 	'loading',
+	'new-entry',
+	'mood-tracker',
 	'project-init',
 	'success',
 ] as const satisfies readonly StartupScreen[];
+
+const commandScreens = {
+	cal: 'calendar',
+	find: 'find',
+	mood: 'mood-tracker',
+	new: 'new-entry',
+} as const;
 
 type ResolveCliStartupInput = {
 	readonly command?: string;
@@ -42,8 +57,13 @@ export const resolveCliStartup = ({
 	screen,
 }: ResolveCliStartupInput) => {
 	const screenFlag = isStartupScreen(screen) ? screen : undefined;
+	const commandScreen =
+		command && command in commandScreens
+			? commandScreens[command as keyof typeof commandScreens]
+			: undefined;
 	const shouldStartInit =
-		command === 'init' || (!screenFlag && !hasCurrentProjectConfig);
+		command === 'init' ||
+		(!screenFlag && !commandScreen && !hasCurrentProjectConfig);
 	const initTarget = shouldStartInit
 		? resolveInitTarget({
 				cwd,
@@ -54,6 +74,6 @@ export const resolveCliStartup = ({
 	return {
 		configDirectory: initTarget?.configDirectory ?? cwd,
 		postInitCdCommand: initTarget?.cdCommand,
-		screen: shouldStartInit ? 'init' : screenFlag ?? 'home',
+		screen: shouldStartInit ? 'init' : screenFlag ?? commandScreen ?? 'home',
 	};
 };

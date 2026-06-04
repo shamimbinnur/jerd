@@ -1,10 +1,6 @@
 export const colors = {
-	outline: '#2c2a2a',
 	spiral: '#7A747F',
 	brand: '#FF7A1A',
-	background: '#26232C',
-	homePanelBorder: '#34313B',
-	homeStatBorder: '#FFB15C',
 	homeActionBackground: '#7A1A00',
 	homeActionKeyBackground: '#FF5A1F',
 	homeActionText: '#FFF7F5',

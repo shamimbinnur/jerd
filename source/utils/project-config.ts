@@ -12,6 +12,7 @@ type ProjectConfigInput = {
 
 type ConfigRecord = Record<string, unknown>;
 export type ProjectConfig = ConfigRecord & {
+	readonly editor?: string;
 	readonly name?: string;
 };
 
@@ -89,6 +90,10 @@ export const writeProjectConfig = async ({
 	const config = {
 		...existingConfig,
 		name: name.trim(),
+		editor:
+			typeof existingConfig.editor === 'string'
+				? existingConfig.editor
+				: 'nvim',
 		createdAt:
 			typeof existingConfig['createdAt'] === 'string'
 				? existingConfig['createdAt']

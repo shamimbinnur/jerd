@@ -6,21 +6,35 @@ import {colors} from '../theme/colors.js';
 import {getGreeting} from '../utils/greeting.js';
 
 const actions = [
-	{id: 'calendar', label: 'Cal', shortcut: 'c'},
-	{id: 'find', label: 'Find', shortcut: 'f'},
 	{id: 'write', label: 'Write', shortcut: 'w'},
+	{id: 'find', label: 'Find', shortcut: 'f'},
+	{id: 'calendar', label: 'Cal', shortcut: 'c'},
 	{id: 'mood', label: 'Mood', shortcut: 'm'},
 ] as const;
 
-const metricValue = '1.4K';
-
 type Props = {
-	readonly mode: 'command' | 'visual';
+	readonly journalEntryCount: number;
+	readonly journalStatus?: string;
 	readonly now?: Date;
 	readonly userName: string;
 };
 
-export default function Home({mode, now = new Date(), userName}: Props) {
+const formatEntryCount = (count: number) => {
+	if (count < 1000) {
+		return String(count);
+	}
+
+	const compact = count / 1000;
+	const rounded = Math.round(compact * 10) / 10;
+	return `${rounded % 1 === 0 ? String(rounded.toFixed(0)) : String(rounded)}K`;
+};
+
+export default function Home({
+	journalEntryCount,
+	journalStatus,
+	now = new Date(),
+	userName,
+}: Props) {
 	return (
 		<Box flexDirection="column" flexGrow={1}>
 			<Box flexDirection="column">
@@ -50,7 +64,11 @@ export default function Home({mode, now = new Date(), userName}: Props) {
 							flexDirection="column"
 							justifyContent="center"
 						>
-							<BigText colors={[colors.brand]} font="tiny" text={metricValue} />
+							<BigText
+								colors={[colors.brand]}
+								font="tiny"
+								text={formatEntryCount(journalEntryCount)}
+							/>
 						</Box>
 
 						<Box marginTop={1}>
@@ -86,14 +104,13 @@ export default function Home({mode, now = new Date(), userName}: Props) {
 				</Box>
 			</Box>
 
-			<Box flexDirection="column" marginTop={3}>
-				<Box justifyContent="center">
-					<Text color={colors.textHint}>Mode: {mode}</Text>
+			{journalStatus ? (
+				<Box flexDirection="column" marginTop={3}>
+					<Box justifyContent="center">
+						<Text color={colors.successAccent}>{journalStatus}</Text>
+					</Box>
 				</Box>
-				<Box justifyContent="center">
-					<Text color={colors.textHint}>jk toggles command/visual mode</Text>
-				</Box>
-			</Box>
+			) : null}
 		</Box>
 	);
 }
