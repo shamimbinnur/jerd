@@ -35,12 +35,6 @@ this config value, then `vim`.
 `updatedAt`
 : The last time init wrote the project config.
 
-## Legacy Config
-
-Jerd still detects `jerd.config.js` for compatibility with older projects and
-will attempt to load it when no `jerd.config.json` exists. New projects should
-use `jerd.config.json`.
-
 ## Navigation
 
 **Previous:** [Usage](usage.md)  

@@ -11,9 +11,8 @@ directory unless you are creating a new project with `jerd init`.
 jerd
 ```
 
-If the current directory has `jerd.config.json` or the legacy
-`jerd.config.js`, Jerd opens the home screen. If no config is found, Jerd starts
-the init flow.
+If the current directory has `jerd.config.json`, Jerd opens the home screen. If
+no config is found, Jerd starts the init flow.
 
 Home shortcuts:
 

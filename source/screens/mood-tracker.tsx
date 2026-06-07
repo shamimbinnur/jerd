@@ -1,24 +1,7 @@
 import {Box, Text} from 'ink';
-import React from 'react';
 import {colors} from '../theme/colors.js';
-import type {JournalMood} from '../utils/journal.js';
-
-const monthLabels = [
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December',
-] as const;
-
-const weekLabels = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] as const;
+import type {JournalMood} from '../utils/journal-frontmatter.js';
+import {buildMonthGrid, weekLabels} from '../utils/month-grid.js';
 
 const moodColors: Record<JournalMood, string> = {
 	angry: '#5C1212',
@@ -37,18 +20,7 @@ type Props = {
 const padDay = (day: number) => String(day).padStart(2, '0');
 
 export default function MoodTracker({month, moodsByDay, year}: Props) {
-	const monthIndex = month - 1;
-	const monthLabel = monthLabels[monthIndex] ?? 'January';
-	const firstDayOffset = new Date(year, monthIndex, 1).getDay();
-	const totalDays = new Date(year, monthIndex + 1, 0).getDate();
-	const cells: Array<number | undefined> = [
-		...Array.from({length: firstDayOffset}, () => undefined),
-		...Array.from({length: totalDays}, (_, index) => index + 1),
-	];
-	const rows: Array<Array<number | undefined>> = [];
-	for (let index = 0; index < cells.length; index += 7) {
-		rows.push(cells.slice(index, index + 7));
-	}
+	const {label: monthLabel, rows} = buildMonthGrid({month, year});
 
 	return (
 		<Box flexDirection="column" flexGrow={1}>

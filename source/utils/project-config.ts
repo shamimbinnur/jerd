@@ -2,10 +2,10 @@ import {access, mkdir, readFile, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 
 const configFileName = 'jerd.config.json';
-const legacyConfigFileName = 'jerd.config.js';
 
 type ProjectConfigInput = {
 	readonly directory: string;
+	readonly editor: string;
 	readonly name: string;
 	readonly now?: Date;
 };
@@ -42,22 +42,9 @@ const readExistingConfig = async (
 export const getProjectConfigPath = (directory: string) =>
 	join(directory, configFileName);
 
-const getLegacyProjectConfigPath = (directory: string) =>
-	join(directory, legacyConfigFileName);
-
 export const hasProjectConfig = async (directory: string) => {
 	try {
 		await access(getProjectConfigPath(directory));
-
-		return true;
-	} catch (error: unknown) {
-		if (!isNotFoundError(error)) {
-			throw error;
-		}
-	}
-
-	try {
-		await access(getLegacyProjectConfigPath(directory));
 
 		return true;
 	} catch (error: unknown) {
@@ -69,18 +56,12 @@ export const hasProjectConfig = async (directory: string) => {
 	}
 };
 
-export const loadProjectConfig = async (directory: string) => {
-	const config = await readExistingConfig(getProjectConfigPath(directory));
-
-	if (Object.keys(config).length > 0) {
-		return config;
-	}
-
-	return readExistingConfig(getLegacyProjectConfigPath(directory));
-};
+export const loadProjectConfig = async (directory: string) =>
+	readExistingConfig(getProjectConfigPath(directory));
 
 export const writeProjectConfig = async ({
 	directory,
+	editor,
 	name,
 	now = new Date(),
 }: ProjectConfigInput) => {
@@ -90,10 +71,7 @@ export const writeProjectConfig = async ({
 	const config = {
 		...existingConfig,
 		name: name.trim(),
-		editor:
-			typeof existingConfig.editor === 'string'
-				? existingConfig.editor
-				: 'nvim',
+		editor,
 		createdAt:
 			typeof existingConfig['createdAt'] === 'string'
 				? existingConfig['createdAt']

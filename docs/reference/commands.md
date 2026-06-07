@@ -79,8 +79,7 @@ jerd --screen=mood-tracker
 ```
 
 Supported values are `home`, `calendar`, `find`, `mood-tracker`, `init`,
-`project-init`, `loading`, `success`, `dashboard`, `confirmation`, `farewell`,
-and `new-entry`.
+`project-init`, and `new-entry`.
 
 ## Navigation
 

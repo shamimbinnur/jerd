@@ -1,22 +1,6 @@
 import {Box, Text} from 'ink';
-import React from 'react';
 import {colors} from '../theme/colors.js';
-
-const weekLabels = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] as const;
-const monthLabels = [
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December',
-] as const;
+import {buildMonthGrid, weekLabels} from '../utils/month-grid.js';
 
 type Props = {
 	readonly entryDays: ReadonlySet<number>;
@@ -31,23 +15,16 @@ const padDay = (day: number) => String(day).padStart(2, ' ');
 export default function Calendar({
 	entryDays,
 	isOpening = false,
-	now = new Date(),
+	now,
 	selectedDay,
 	status,
 }: Props) {
-	const year = now.getFullYear();
-	const monthIndex = now.getMonth();
-	const monthLabel = monthLabels[monthIndex] ?? 'January';
-	const firstDayOffset = new Date(year, monthIndex, 1).getDay();
-	const totalDays = new Date(year, monthIndex + 1, 0).getDate();
-	const cells: Array<number | undefined> = [
-		...Array.from({length: firstDayOffset}, () => undefined),
-		...Array.from({length: totalDays}, (_, index) => index + 1),
-	];
-	const rows: Array<Array<number | undefined>> = [];
-	for (let index = 0; index < cells.length; index += 7) {
-		rows.push(cells.slice(index, index + 7));
-	}
+	const currentTime = now ?? new Date();
+	const year = currentTime.getFullYear();
+	const {label: monthLabel, rows} = buildMonthGrid({
+		month: currentTime.getMonth() + 1,
+		year,
+	});
 
 	return (
 		<Box flexDirection="column" flexGrow={1}>
@@ -102,8 +79,8 @@ export default function Calendar({
 											hasEntry
 												? colors.brand
 												: isSelected
-												? colors.successAccent
-												: colors.textPrimary
+													? colors.successAccent
+													: colors.textPrimary
 										}
 										inverse={isSelected}
 									>

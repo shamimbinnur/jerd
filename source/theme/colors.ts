@@ -15,9 +15,7 @@ export const colors = {
 	optionTextInactive: '#77727D',
 	optionNoTextActive: '#FFF7F5',
 	optionBorderInactive: '#2B3138',
-	loadingAccent: '#F4BF4F',
 	successAccent: '#4FD98C',
-	successBorder: '#1D6B44',
 	farewellBorder: '#FF5A1F',
 	farewellProgressElapsed: '#7A1A00',
 } as const;

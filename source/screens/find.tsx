@@ -1,8 +1,8 @@
 import {TextInput} from '@inkjs/ui';
 import {Box, Text} from 'ink';
-import React from 'react';
+import SearchResultList from '../components/search-result-list.js';
 import {colors} from '../theme/colors.js';
-import type {SearchResult} from '../utils/search.js';
+import type {SearchResult} from '../utils/journal-search.js';
 
 type Props = {
 	readonly isOpening?: boolean;
@@ -21,8 +21,6 @@ export default function Find({
 	results,
 	selectedIndex,
 }: Props) {
-	const hasResults = results.length > 0;
-
 	return (
 		<Box flexDirection="column" flexGrow={1}>
 			<Box marginBottom={1}>
@@ -42,8 +40,9 @@ export default function Find({
 				flexDirection="column"
 				paddingX={1}
 				paddingY={1}
+				width="100%"
 			>
-				<Box width={50}>
+				<Box>
 					<Text color={colors.brand}>/ </Text>
 					<Text color={colors.textHint}>
 						<TextInput
@@ -55,28 +54,16 @@ export default function Find({
 					</Text>
 				</Box>
 				<Text color={colors.textHint}>
-					(e.g, today, yesterday, 2026-05-31, content )
+					(e.g. today, yesterday, 2026-05-31, content)
 				</Text>
 			</Box>
 
 			<Box flexDirection="column" marginTop={1}>
-				{isOpening ? (
-					<Text color={colors.textHint}>Opening entry...</Text>
-				) : null}
-
-				{hasResults
-					? results.slice(0, 12).map((result, index) => {
-							const isSelected = index === selectedIndex;
-							return (
-								<Box key={result.path}>
-									<Text color={isSelected ? colors.brand : colors.textHint}>
-										{isSelected ? '> ' : '  '}
-										{result.date} {result.preview}
-									</Text>
-								</Box>
-							);
-					  })
-					: !isOpening && <Text color={colors.textHint}>No entry found.</Text>}
+				<SearchResultList
+					isOpening={isOpening}
+					results={results}
+					selectedIndex={selectedIndex}
+				/>
 			</Box>
 		</Box>
 	);

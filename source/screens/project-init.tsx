@@ -1,15 +1,29 @@
 import {TextInput} from '@inkjs/ui';
 import {Box, Text} from 'ink';
-import React from 'react';
+import {
+	editorOptions,
+	useProjectInitForm,
+	type ProjectInitSubmitInput,
+} from '../hooks/use-project-init-form.js';
 import {colors} from '../theme/colors.js';
 
 type Props = {
-	readonly onSubmitName?: (name: string) => void | Promise<void>;
+	readonly nextStepCommand?: string;
+	readonly onSubmitProject?: (
+		input: ProjectInitSubmitInput,
+	) => void | Promise<void>;
 };
 
-export default function ProjectInit({onSubmitName}: Props) {
-	const [submittedName, setSubmittedName] = React.useState<string>();
-	const [errorMessage, setErrorMessage] = React.useState<string>();
+export default function ProjectInit({nextStepCommand, onSubmitProject}: Props) {
+	const {
+		errorMessage,
+		name,
+		selectedEditorIndex,
+		submittedProject,
+		submitName,
+	} = useProjectInitForm({
+		onSubmitProject,
+	});
 
 	return (
 		<Box flexDirection="column" flexGrow={1}>
@@ -40,39 +54,63 @@ export default function ProjectInit({onSubmitName}: Props) {
 							Name
 						</Text>
 
-						<Box
-							borderColor={colors.optionBorderInactive}
-							borderStyle="round"
-							marginTop={1}
-							paddingX={1}
-						>
-							<TextInput
-								placeholder="Enter your name..."
-								onSubmit={name => {
-									setErrorMessage(undefined);
-									setSubmittedName(name);
-									void Promise.resolve(onSubmitName?.(name)).catch(
-										(error: unknown) => {
-											setErrorMessage(
-												error instanceof Error
-													? error.message
-													: 'Could not save project config',
-											);
-										},
-									);
-								}}
-							/>
-						</Box>
+						{name ? (
+							<Box marginTop={1}>
+								<Text color={colors.textHint}>{name}</Text>
+							</Box>
+						) : (
+							<Box
+								borderColor={colors.optionBorderInactive}
+								borderStyle="round"
+								marginTop={1}
+								paddingX={1}
+							>
+								<TextInput
+									placeholder="Enter your name..."
+									onSubmit={submitName}
+								/>
+							</Box>
+						)}
+
+						{name ? (
+							<Box flexDirection="column" marginTop={2}>
+								<Text bold color={colors.textPrimary}>
+									Default editor
+								</Text>
+
+								<Box gap={1} marginTop={1}>
+									{editorOptions.map((editor, index) => {
+										const isSelected = index === selectedEditorIndex;
+
+										return (
+											<Box
+												key={editor}
+												borderColor={
+													isSelected
+														? colors.optionYesBorderActive
+														: colors.optionBorderInactive
+												}
+												borderStyle="round"
+											>
+												<Text
+													color={
+														isSelected
+															? colors.optionYesTextActive
+															: colors.optionTextInactive
+													}
+												>
+													{` ${String(index + 1)} ${editor} `}
+												</Text>
+											</Box>
+										);
+									})}
+								</Box>
+							</Box>
+						) : null}
 
 						{errorMessage ? (
 							<Box marginTop={1}>
 								<Text color={colors.optionNoTextActive}>{errorMessage}</Text>
-							</Box>
-						) : null}
-
-						{submittedName ? (
-							<Box marginTop={1}>
-								<Text color={colors.textHint}>Saved: {submittedName}</Text>
 							</Box>
 						) : null}
 					</Box>
@@ -80,8 +118,22 @@ export default function ProjectInit({onSubmitName}: Props) {
 			</Box>
 
 			<Box flexDirection="column" marginTop={3}>
+				{submittedProject ? (
+					<Box justifyContent="center">
+						<Text color={colors.textHint}>
+							Saved: {submittedProject.name} / {submittedProject.editor}
+						</Text>
+					</Box>
+				) : null}
+
 				<Box justifyContent="center">
-					<Text color={colors.textHint}>Press enter to continue</Text>
+					<Text color={colors.textHint}>
+						{name
+							? nextStepCommand
+								? 'Press enter to save and exit'
+								: 'Press enter to continue'
+							: 'Press enter to continue'}
+					</Text>
 				</Box>
 			</Box>
 		</Box>

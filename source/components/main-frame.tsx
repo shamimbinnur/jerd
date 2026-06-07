@@ -7,6 +7,7 @@ type Props = {
 };
 
 const innerHeight = 27;
+const contentPaddingX = 1;
 const bindingPattern = ['⊂⊃┆', '│ ┆', '⊂⊃┆', '  ┆'] as const;
 const spiral = Array.from({length: innerHeight}, (_, position) => ({
 	id: `spiral-tick-${position}`,
@@ -33,7 +34,12 @@ export default function MainFrame({children}: Props) {
 						))}
 					</Box>
 
-					<Box flexDirection="column" flexGrow={1} paddingY={1}>
+					<Box
+						flexDirection="column"
+						flexGrow={1}
+						paddingX={contentPaddingX}
+						paddingY={1}
+					>
 						{children}
 					</Box>
 				</Box>

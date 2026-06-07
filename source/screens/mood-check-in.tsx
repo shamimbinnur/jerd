@@ -1,25 +1,10 @@
 import {Box, Text} from 'ink';
-import React from 'react';
+import {moodOptions} from '../components/mood-check-in/mood-options.js';
 import {colors} from '../theme/colors.js';
-import type {JournalMood} from '../utils/journal.js';
-
-const moodOptions: Array<{
-	readonly label: string;
-	readonly mood: JournalMood;
-	readonly symbol: string;
-}> = [
-	{label: 'Happy', mood: 'happy', symbol: 'H'},
-	{label: 'Calm', mood: 'calm', symbol: 'C'},
-	{label: 'Neutral', mood: 'neutral', symbol: 'N'},
-	{label: 'Sad', mood: 'sad', symbol: 'S'},
-	{label: 'Angry', mood: 'angry', symbol: 'A'},
-];
 
 type Props = {
 	readonly selectedIndex: number;
 };
-
-export {moodOptions};
 
 export default function MoodCheckIn({selectedIndex}: Props) {
 	return (

@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import process from 'node:process';
-import React from 'react';
 import {render} from 'ink';
 import meow from 'meow';
 import App from './app.js';
@@ -18,7 +17,7 @@ const cli = meow(
 	  $ jerd mood
 
 	Options
-		--screen  Screen to render: home, calendar, find, mood-tracker, init, project-init, loading, success, dashboard, confirmation, farewell, or new-entry
+		--screen  Screen to render: home, calendar, find, mood-tracker, init, project-init, or new-entry
 
 	Examples
 	  $ jerd
@@ -29,7 +28,7 @@ const cli = meow(
 	  $ jerd init
 	  $ jerd init .
 	  $ jerd init my-journal
-	  $ jerd --screen=confirmation
+	  $ jerd --screen=init
 `,
 	{
 		importMeta: import.meta,
@@ -52,6 +51,34 @@ const startup = resolveCliStartup({
 	screen: cli.flags.screen,
 });
 
-render(
-	<App configDirectory={startup.configDirectory} screen={startup.screen} />,
+const formatNextStep = (command: string) => {
+	const message = `==> Next: ${command}`;
+
+	if (!process.stdout.isTTY) {
+		return message;
+	}
+
+	const bold = '\u001B[1m';
+	const highlight = '\u001B[38;5;208m';
+	const reset = '\u001B[0m';
+
+	return `${highlight}${bold}${message}${reset}`;
+};
+
+let nextStepCommand: string | undefined;
+const app = render(
+	<App
+		configDirectory={startup.configDirectory}
+		postInitCdCommand={startup.postInitCdCommand}
+		screen={startup.screen}
+		onPostInitNextStep={command => {
+			nextStepCommand = command;
+		}}
+	/>,
 );
+
+await app.waitUntilExit();
+
+if (nextStepCommand) {
+	console.log(`\n${formatNextStep(nextStepCommand)}\n`);
+}

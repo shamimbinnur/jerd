@@ -61,17 +61,6 @@ tags:
 ---
 ```
 
-## Legacy Entry Names
-
-Jerd can still read older entry names in this format:
-
-```text
-YYYY/month-name/YYYY-MM-DD.md
-```
-
-When both modern and legacy files exist for the same day, Jerd prefers the
-modern `YYYY_month-name_DD.md` file.
-
 ## Navigation
 
 **Previous:** [Commands](commands.md)
