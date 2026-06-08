@@ -5,6 +5,7 @@ export type StartupScreen =
 	| 'find'
 	| 'home'
 	| 'init'
+	| 'mood-check-in'
 	| 'new-entry'
 	| 'mood-tracker'
 	| 'project-init';
@@ -14,6 +15,7 @@ const screens = [
 	'find',
 	'home',
 	'init',
+	'mood-check-in',
 	'new-entry',
 	'mood-tracker',
 	'project-init',
@@ -23,7 +25,7 @@ const commandScreens = {
 	cal: 'calendar',
 	find: 'find',
 	mood: 'mood-tracker',
-	new: 'new-entry',
+	new: 'mood-check-in',
 } as const;
 
 type StartupCommand = keyof typeof commandScreens;

@@ -3,7 +3,10 @@ import process from 'node:process';
 import React from 'react';
 import type {Screen} from '../types.js';
 import {openJournalInEditor} from '../utils/journal-editor.js';
-import type {JournalMood} from '../utils/journal-frontmatter.js';
+import {
+	type JournalMood,
+	upsertMoodFrontmatter,
+} from '../utils/journal-frontmatter.js';
 import {
 	countJournalEntries,
 	loadJournalEntry,
@@ -112,7 +115,11 @@ export const useJournalEditor = ({
 						now,
 						rootDirectory: configDirectory,
 					});
-					const content = await openJournalInEditor(existingContent, editor);
+					const initialContent = upsertMoodFrontmatter(
+						existingContent,
+						selectedMood,
+					);
+					const content = await openJournalInEditor(initialContent, editor);
 					await saveJournalEntry({
 						content,
 						mode: 'replace',

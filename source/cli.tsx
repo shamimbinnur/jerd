@@ -17,7 +17,7 @@ const cli = meow(
 	  $ jerd mood
 
 	Options
-		--screen  Screen to render: home, calendar, find, mood-tracker, init, project-init, or new-entry
+		--screen  Screen to render: home, calendar, find, mood-check-in, mood-tracker, init, project-init, or new-entry
 
 	Examples
 	  $ jerd
@@ -52,7 +52,7 @@ const startup = resolveCliStartup({
 });
 
 const formatNextStep = (command: string) => {
-	const message = `==> Next: ${command}`;
+	const message = `==> Next: ${command} && jerd`;
 
 	if (!process.stdout.isTTY) {
 		return message;

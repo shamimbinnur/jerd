@@ -28,14 +28,15 @@ directory. Passing `.` currently follows the same default and also targets a
 
 ## `jerd new`
 
-Open today's entry in your editor.
+Ask for today's mood, then open today's entry in your editor.
 
 ```bash
 jerd new
 ```
 
 Entries are saved in replace mode for the current day, so editing an existing
-entry updates that day's Markdown file.
+entry updates that day's Markdown file. The selected mood is saved in the
+entry frontmatter.
 
 ## `jerd find`
 
@@ -78,8 +79,8 @@ jerd --screen=find
 jerd --screen=mood-tracker
 ```
 
-Supported values are `home`, `calendar`, `find`, `mood-tracker`, `init`,
-`project-init`, and `new-entry`.
+Supported values are `home`, `calendar`, `find`, `mood-check-in`,
+`mood-tracker`, `init`, `project-init`, and `new-entry`.
 
 ## Navigation
 

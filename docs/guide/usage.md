@@ -27,10 +27,11 @@ Home shortcuts:
 jerd new
 ```
 
-Jerd opens today's entry in your configured editor. If an entry already exists
-for today, the editor opens with the existing content and saves it back in place.
+Jerd asks for your mood, then opens today's entry in your configured editor. If
+an entry already exists for today, the editor opens with the existing content and
+saves it back in place.
 
-Before opening the editor, the interactive home flow asks for a mood:
+Before opening the editor, Jerd asks for a mood:
 
 - `H`: happy
 - `C`: calm
