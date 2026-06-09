@@ -1,11 +1,17 @@
 export type JournalMood = 'angry' | 'calm' | 'happy' | 'neutral' | 'sad';
 
-const journalMoods = ['angry', 'calm', 'happy', 'neutral', 'sad'] as const;
+export const journalMoods = [
+	'angry',
+	'calm',
+	'happy',
+	'neutral',
+	'sad',
+] as const;
 
 export const normalizeLineEndings = (value: string) =>
 	value.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
 
-const isJournalMood = (value: string): value is JournalMood => {
+export const isJournalMood = (value: string): value is JournalMood => {
 	for (const mood of journalMoods) {
 		if (mood === value) {
 			return true;
@@ -13,6 +19,15 @@ const isJournalMood = (value: string): value is JournalMood => {
 	}
 
 	return false;
+};
+
+export const parseJournalMood = (
+	value: string | undefined,
+): JournalMood | undefined => {
+	const normalizedValue = value?.trim().toLowerCase();
+	return normalizedValue && isJournalMood(normalizedValue)
+		? normalizedValue
+		: undefined;
 };
 
 const readFrontmatter = (content: string) => {

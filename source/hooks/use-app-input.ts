@@ -20,7 +20,9 @@ type MoodTracker = ReturnType<typeof useMoodTracker>;
 type UseAppInputOptions = {
 	readonly activeScreen: Screen;
 	readonly calendar: CalendarEntries;
+	readonly clearInvalidMoodInput: () => void;
 	readonly find: FindEntries;
+	readonly isMoodSelectInputActive: boolean;
 	readonly moodCheckInSelectedIndex: number;
 	readonly moodTracker: MoodTracker;
 	readonly openSelectedCalendarEntry: () => void;
@@ -34,7 +36,9 @@ type UseAppInputOptions = {
 export const useAppInput = ({
 	activeScreen,
 	calendar,
+	clearInvalidMoodInput,
 	find,
+	isMoodSelectInputActive,
 	moodCheckInSelectedIndex,
 	moodTracker,
 	openSelectedCalendarEntry,
@@ -50,6 +54,15 @@ export const useAppInput = ({
 		const normalizedInput = input?.toLowerCase() ?? '';
 
 		if (activeScreen === 'mood-check-in') {
+			if (isMoodSelectInputActive) {
+				if (key.escape) {
+					clearInvalidMoodInput();
+					setActiveScreen('home');
+				}
+
+				return;
+			}
+
 			handleMoodCheckInInput({
 				input: normalizedInput,
 				key,
@@ -96,6 +109,7 @@ export const useAppInput = ({
 				openFind: find.reset,
 				openMoodTracker: moodTracker.reset,
 				resetMoodCheckIn() {
+					clearInvalidMoodInput();
 					setMoodCheckInSelectedIndex(0);
 				},
 				setActiveScreen,

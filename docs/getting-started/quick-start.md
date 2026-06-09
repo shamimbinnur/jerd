@@ -35,6 +35,12 @@ jerd new
 Jerd asks for a mood, opens your editor, and saves the result as a Markdown file
 for today's date.
 
+To skip the mood prompt, pass one directly:
+
+```bash
+jerd new --mood calm
+```
+
 ## 4. Use the Home Screen
 
 Run Jerd with no command from an initialized project:

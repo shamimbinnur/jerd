@@ -1,4 +1,5 @@
 import {resolveInitTarget} from './init-target.js';
+import {parseJournalMood} from './journal-frontmatter.js';
 
 export type StartupScreen =
 	| 'calendar'
@@ -35,6 +36,7 @@ type ResolveCliStartupInput = {
 	readonly cwd: string;
 	readonly directory?: string;
 	readonly hasCurrentProjectConfig: boolean;
+	readonly mood?: string;
 	readonly screen?: string;
 };
 
@@ -62,9 +64,15 @@ export const resolveCliStartup = ({
 	cwd,
 	directory,
 	hasCurrentProjectConfig,
+	mood,
 	screen,
 }: ResolveCliStartupInput) => {
 	const screenFlag = isStartupScreen(screen) ? screen : undefined;
+	const moodFlag = typeof mood === 'string' ? mood.trim() : undefined;
+	const initialMood =
+		command === 'new' && moodFlag ? parseJournalMood(moodFlag) : undefined;
+	const invalidMood =
+		command === 'new' && moodFlag && !initialMood ? moodFlag : undefined;
 	const commandScreen = isStartupCommand(command)
 		? commandScreens[command]
 		: undefined;
@@ -79,7 +87,11 @@ export const resolveCliStartup = ({
 
 	return {
 		configDirectory: initTarget?.configDirectory ?? cwd,
+		initialMood,
+		invalidMood,
 		postInitCdCommand: initTarget?.cdCommand,
-		screen: shouldStartInit ? 'init' : (screenFlag ?? commandScreen ?? 'home'),
+		screen: shouldStartInit
+			? 'init'
+			: (screenFlag ?? (initialMood ? 'new-entry' : commandScreen) ?? 'home'),
 	};
 };

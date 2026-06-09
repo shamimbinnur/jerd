@@ -28,15 +28,21 @@ directory. Passing `.` currently follows the same default and also targets a
 
 ## `jerd new`
 
-Ask for today's mood, then open today's entry in your editor.
+Ask for today's mood, then open today's entry in your editor. Pass a mood to
+skip the check-in screen.
 
 ```bash
 jerd new
+jerd new --mood calm
+jerd new -mood calm
+jerd new -m happy
 ```
 
 Entries are saved in replace mode for the current day, so editing an existing
 entry updates that day's Markdown file. The selected mood is saved in the
-entry frontmatter.
+entry frontmatter. Valid mood values are `happy`, `calm`, `neutral`, `sad`, and
+`angry`. If the mood is misspelled, Jerd opens a selector so you can choose the
+correct mood.
 
 ## `jerd find`
 

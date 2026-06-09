@@ -3,6 +3,7 @@ import process from 'node:process';
 import {render} from 'ink';
 import meow from 'meow';
 import App from './app.js';
+import {normalizeCliArgv} from './utils/cli-argv.js';
 import {resolveCliStartup} from './utils/cli-startup.js';
 import {hasProjectConfig} from './utils/project-config.js';
 
@@ -11,17 +12,21 @@ const cli = meow(
 	Usage
 	  $ jerd
 	  $ jerd init [directory]
-	  $ jerd new
+	  $ jerd new [--mood mood]
 	  $ jerd find
 	  $ jerd cal
 	  $ jerd mood
 
 	Options
+		--mood, -mood, -m  Mood for jerd new: happy, calm, neutral, sad, or angry
 		--screen  Screen to render: home, calendar, find, mood-check-in, mood-tracker, init, project-init, or new-entry
 
 	Examples
 	  $ jerd
 	  $ jerd new
+	  $ jerd new --mood calm
+	  $ jerd new -mood calm
+	  $ jerd new -m happy
 	  $ jerd find
 	  $ jerd cal
 	  $ jerd mood
@@ -31,8 +36,13 @@ const cli = meow(
 	  $ jerd --screen=init
 `,
 	{
+		argv: normalizeCliArgv(process.argv.slice(2)),
 		importMeta: import.meta,
 		flags: {
+			mood: {
+				shortFlag: 'm',
+				type: 'string',
+			},
 			screen: {
 				type: 'string',
 			},
@@ -48,6 +58,7 @@ const startup = resolveCliStartup({
 	cwd,
 	directory,
 	hasCurrentProjectConfig,
+	mood: cli.flags.mood,
 	screen: cli.flags.screen,
 });
 
@@ -69,6 +80,8 @@ let nextStepCommand: string | undefined;
 const app = render(
 	<App
 		configDirectory={startup.configDirectory}
+		initialMood={startup.initialMood}
+		invalidMood={startup.invalidMood}
 		postInitCdCommand={startup.postInitCdCommand}
 		screen={startup.screen}
 		onPostInitNextStep={command => {

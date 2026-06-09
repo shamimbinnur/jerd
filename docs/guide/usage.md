@@ -31,6 +31,17 @@ Jerd asks for your mood, then opens today's entry in your configured editor. If
 an entry already exists for today, the editor opens with the existing content and
 saves it back in place.
 
+To skip the mood check-in screen, pass a mood:
+
+```bash
+jerd new --mood calm
+jerd new -mood calm
+jerd new -m happy
+```
+
+If the mood is misspelled, Jerd opens a small selector so you can choose the
+correct mood.
+
 Before opening the editor, Jerd asks for a mood:
 
 - `H`: happy

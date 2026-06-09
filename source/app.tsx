@@ -9,12 +9,15 @@ import {useFindEntries} from './hooks/use-find-entries.js';
 import {useJournalEditor} from './hooks/use-journal-editor.js';
 import {useMoodTracker} from './hooks/use-mood-tracker.js';
 import {useProjectSettings} from './hooks/use-project-settings.js';
+import MoodCommandSelect from './screens/mood-command-select.js';
 import type {Screen} from './types.js';
 import type {JournalMood} from './utils/journal-frontmatter.js';
 import type {ProjectInitSubmitInput} from './hooks/use-project-init-form.js';
 
 type Props = {
 	readonly configDirectory?: string;
+	readonly initialMood?: JournalMood;
+	readonly invalidMood?: string;
 	readonly now?: Date;
 	readonly onPostInitNextStep?: (command: string) => void;
 	readonly postInitCdCommand?: string;
@@ -23,6 +26,8 @@ type Props = {
 
 export default function App({
 	configDirectory = process.cwd(),
+	initialMood = 'neutral',
+	invalidMood,
 	now,
 	onPostInitNextStep,
 	postInitCdCommand,
@@ -30,7 +35,8 @@ export default function App({
 }: Props) {
 	const {exit} = useApp();
 	const [activeScreen, setActiveScreen] = React.useState<Screen>(screen);
-	const [mood, setMood] = React.useState<JournalMood>('neutral');
+	const [mood, setMood] = React.useState<JournalMood>(initialMood);
+	const [invalidMoodInput, setInvalidMoodInput] = React.useState(invalidMood);
 	const [moodCheckInSelectedIndex, setMoodCheckInSelectedIndex] =
 		React.useState(0);
 	const project = useProjectSettings(configDirectory);
@@ -73,6 +79,7 @@ export default function App({
 
 	const writeWithMood = React.useCallback(
 		(selectedMood: JournalMood) => {
+			setInvalidMoodInput(undefined);
 			setMood(selectedMood);
 			void journal.writeToday(selectedMood);
 		},
@@ -137,7 +144,11 @@ export default function App({
 	useAppInput({
 		activeScreen,
 		calendar,
+		clearInvalidMoodInput() {
+			setInvalidMoodInput(undefined);
+		},
 		find,
+		isMoodSelectInputActive: Boolean(invalidMoodInput),
 		moodCheckInSelectedIndex,
 		moodTracker,
 		openSelectedCalendarEntry() {
@@ -147,6 +158,15 @@ export default function App({
 		setMoodCheckInSelectedIndex,
 		writeWithMood,
 	});
+
+	if (activeScreen === 'mood-check-in' && invalidMoodInput) {
+		return (
+			<MoodCommandSelect
+				invalidMood={invalidMoodInput}
+				onSelectMood={writeWithMood}
+			/>
+		);
+	}
 
 	return (
 		<MainFrame>
