@@ -1,11 +1,45 @@
 #!/usr/bin/env node
 import process from 'node:process';
-import {render} from 'ink';
-import meow from 'meow';
-import App from './app.js';
-import {normalizeCliArgv} from './utils/cli-argv.js';
-import {resolveCliStartup} from './utils/cli-startup.js';
-import {hasProjectConfig} from './utils/project-config.js';
+
+const minimumNodeVersion = [24, 18, 0] as const;
+
+const isSupportedNodeVersion = (version: string) => {
+	const [major = 0, minor = 0, patch = 0] = version
+		.split('.')
+		.map(part => Number.parseInt(part, 10));
+	const [minimumMajor, minimumMinor, minimumPatch] = minimumNodeVersion;
+
+	return (
+		major > minimumMajor ||
+		(major === minimumMajor && minor > minimumMinor) ||
+		(major === minimumMajor && minor === minimumMinor && patch >= minimumPatch)
+	);
+};
+
+if (!isSupportedNodeVersion(process.versions.node)) {
+	console.error(
+		`Jerd requires Node.js ${minimumNodeVersion.join('.')} or newer. You are running ${process.version}.`,
+	);
+	process.exit(1);
+}
+
+const [
+	{default: React},
+	{render},
+	{default: meow},
+	{default: App},
+	{normalizeCliArgv},
+	{resolveCliStartup},
+	{hasProjectConfig},
+] = await Promise.all([
+	import('react'),
+	import('ink'),
+	import('meow'),
+	import('./app.js'),
+	import('./utils/cli-argv.js'),
+	import('./utils/cli-startup.js'),
+	import('./utils/project-config.js'),
+]);
 
 const cli = meow(
 	`
@@ -62,36 +96,14 @@ const startup = resolveCliStartup({
 	screen: cli.flags.screen,
 });
 
-const formatNextStep = (command: string) => {
-	const message = `==> Next: ${command} && jerd`;
-
-	if (!process.stdout.isTTY) {
-		return message;
-	}
-
-	const bold = '\u001B[1m';
-	const highlight = '\u001B[38;5;208m';
-	const reset = '\u001B[0m';
-
-	return `${highlight}${bold}${message}${reset}`;
-};
-
-let nextStepCommand: string | undefined;
 const app = render(
-	<App
-		configDirectory={startup.configDirectory}
-		initialMood={startup.initialMood}
-		invalidMood={startup.invalidMood}
-		postInitCdCommand={startup.postInitCdCommand}
-		screen={startup.screen}
-		onPostInitNextStep={command => {
-			nextStepCommand = command;
-		}}
-	/>,
+	React.createElement(App, {
+		configDirectory: startup.configDirectory,
+		initialMood: startup.initialMood,
+		invalidMood: startup.invalidMood,
+		postInitCdCommand: startup.postInitCdCommand,
+		screen: startup.screen,
+	}),
 );
 
 await app.waitUntilExit();
-
-if (nextStepCommand) {
-	console.log(`\n${formatNextStep(nextStepCommand)}\n`);
-}

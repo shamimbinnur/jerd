@@ -1,7 +1,7 @@
 import type {Key} from 'ink';
-import {moodOptions} from './components/mood-check-in/mood-options.js';
+import {moodOptions} from '../components/mood-check-in/mood-options.js';
+import type {JournalMood} from '../utils/journal-frontmatter.js';
 import type {Screen} from './types.js';
-import type {JournalMood} from './utils/journal-frontmatter.js';
 
 type StateSetter<T> = (value: T | ((current: T) => T)) => void;
 

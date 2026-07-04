@@ -4,7 +4,7 @@
 
 ## Requirements
 
-Jerd requires Node.js 16 or newer.
+Jerd requires Node.js 24.18.0 or newer.
 
 ## Install Globally
 
@@ -23,6 +23,7 @@ jerd --help
 From the repository root:
 
 ```bash
+nvm use
 npm install
 npm run build
 node dist/cli.js --help

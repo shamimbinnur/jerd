@@ -130,7 +130,7 @@ export default function ProjectInit({nextStepCommand, onSubmitProject}: Props) {
 					<Text color={colors.textHint}>
 						{name
 							? nextStepCommand
-								? 'Press enter to save and exit'
+								? 'Press enter to save'
 								: 'Press enter to continue'
 							: 'Press enter to continue'}
 					</Text>

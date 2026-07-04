@@ -23,7 +23,7 @@ export default function MainFrame({children}: Props) {
 				borderStyle="round"
 				flexDirection="column"
 				height={innerHeight + 2}
-				width={44}
+				width={54}
 			>
 				<Box flexDirection="row" gap={1} height={innerHeight} width="100%">
 					<Box alignItems="center" flexDirection="column" width={4}>

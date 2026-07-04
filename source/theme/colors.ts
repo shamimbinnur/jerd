@@ -1,6 +1,6 @@
 export const colors = {
 	spiral: '#7A747F',
-	brand: '#FF7A1A',
+	brand: '#E37D07',
 	homeActionBackground: '#7A1A00',
 	homeActionKeyBackground: '#FF5A1F',
 	homeActionText: '#FFF7F5',
