@@ -10,6 +10,9 @@ type Props = {
 };
 
 const maxVisibleResults = 12;
+
+// Keep this aligned with the frame content width so separators and wrapped
+// match snippets do not trigger Ink's automatic wrapping.
 const resultWidth = 43;
 const separator = '-'.repeat(resultWidth);
 const terminalColors = new Chalk({level: 3});
@@ -17,6 +20,8 @@ const terminalColors = new Chalk({level: 3});
 const colorText = (text: string, color: string) =>
 	terminalColors.hex(color)(text);
 
+// Preserve each wrapped row's original start offset so highlight ranges from
+// the full match line can still be projected onto the visible row.
 const wrapLine = (line: string, width: number) => {
 	const rows: Array<{start: number; text: string}> = [];
 	let start = 0;

@@ -1,6 +1,8 @@
 import {Box, Text} from 'ink';
-import {colors} from '../theme/colors.js';
+import {colors} from '../../theme/colors.js';
 
+// Pad every label to the same width so each action tile keeps a stable split
+// between the action name and shortcut badge.
 const actionLabelWidth = 8;
 
 type Props = {

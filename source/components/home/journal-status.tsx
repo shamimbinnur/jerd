@@ -5,6 +5,8 @@ type Props = {
 	readonly status: string;
 };
 
+// Status messages are centered below the home actions so transient save/open
+// feedback does not shift the primary controls.
 export default function JournalStatus({status}: Props) {
 	return (
 		<Box flexDirection="column" marginTop={3}>

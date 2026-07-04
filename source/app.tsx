@@ -2,7 +2,7 @@ import process from 'node:process';
 import React from 'react';
 import {useApp} from 'ink';
 import AppScreen from './app/screen.js';
-import MainFrame from './components/main-frame.js';
+import MainFrame from './components/layout/main-frame.js';
 import {useAppInput} from './hooks/use-app-input.js';
 import {useCalendarEntries} from './hooks/use-calendar-entries.js';
 import {useFindEntries} from './hooks/use-find-entries.js';
