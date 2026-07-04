@@ -23,15 +23,20 @@ export default function SearchResultList({
 		return <Text color={colors.textHint}>No entry found.</Text>;
 	}
 
+	const visibleResults = results.slice(0, maxVisibleResults);
+
 	return (
 		<>
-			{results.slice(0, maxVisibleResults).map((result, index) => {
+			{visibleResults.map((result, index) => {
 				const isSelected = index === selectedIndex;
 				return (
-					<Box key={result.path}>
+					<Box
+						key={result.path}
+						marginBottom={index === visibleResults.length - 1 ? 0 : 1}
+					>
 						<Text color={isSelected ? colors.brand : colors.textHint}>
 							{isSelected ? '> ' : '  '}
-							{result.date} {result.preview}
+							{result.date} | {result.preview}
 						</Text>
 					</Box>
 				);

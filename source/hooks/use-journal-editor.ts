@@ -5,8 +5,9 @@ import type {Screen} from '../app/types.js';
 import {openJournalInEditor} from '../utils/journal-editor.js';
 import {
 	type JournalMood,
-	upsertMoodFrontmatter,
+	upsertJournalFrontmatter,
 } from '../utils/journal-frontmatter.js';
+import {toDateSlug} from '../utils/journal-paths.js';
 import {
 	countJournalEntries,
 	loadJournalEntry,
@@ -115,10 +116,12 @@ export const useJournalEditor = ({
 						now,
 						rootDirectory: configDirectory,
 					});
-					const initialContent = upsertMoodFrontmatter(
-						existingContent,
-						selectedMood,
-					);
+					const entryDate = now ?? new Date();
+					const initialContent = upsertJournalFrontmatter(existingContent, {
+						mood: selectedMood,
+						slug: toDateSlug(entryDate),
+						tags: [],
+					});
 					const content = await openJournalInEditor(initialContent, editor);
 					await saveJournalEntry({
 						content,

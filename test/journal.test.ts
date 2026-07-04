@@ -37,7 +37,10 @@ test('saves and loads today entry with mood frontmatter', async t => {
 		});
 
 		t.is(relativePath, join('2026', 'june', '2026_june_07.md'));
-		t.is(content, '---\nmood: happy\n---\n\nA readable entry\n');
+		t.is(
+			content,
+			'---\nmood: happy\nslug: "07-june-2026"\ntags: []\n---\n\nA readable entry\n',
+		);
 	});
 });
 

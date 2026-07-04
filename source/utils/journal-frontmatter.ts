@@ -38,25 +38,74 @@ const readFrontmatter = (content: string) => {
 export const stripFrontmatter = (content: string) =>
 	normalizeLineEndings(content).replace(/^---\n[\s\S]*?\n---\n?/v, '');
 
-export const upsertMoodFrontmatter = (content: string, mood?: string) => {
-	if (!mood) {
+type JournalFrontmatter = {
+	readonly mood?: string;
+	readonly slug?: string;
+	readonly tags?: readonly string[];
+};
+
+type FrontmatterField = {
+	readonly key: 'mood' | 'slug' | 'tags';
+	readonly value: string;
+};
+
+const quoteYamlString = (value: string) =>
+	`"${value.replaceAll('\\', String.raw`\\`).replaceAll('"', String.raw`\"`)}"`;
+
+export const upsertJournalFrontmatter = (
+	content: string,
+	{mood, slug, tags}: JournalFrontmatter,
+) => {
+	if (!mood && !slug && !tags) {
 		return content.trim();
 	}
 
 	const trimmed = content.trim();
 	const match = /^---\n([\s\S]*?)\n---\n?/v.exec(trimmed);
-	if (!match) {
-		return `---\nmood: ${mood}\n---\n\n${trimmed}`.trim();
+	const fields: FrontmatterField[] = [];
+	if (mood) {
+		fields.push({key: 'mood', value: mood});
 	}
 
-	const block = match[1] ?? '';
-	const hasMood = /^\s*mood\s*:/imv.test(block);
-	const nextBlock = hasMood
-		? block.replace(/^\s*mood\s*:\s*.*$/imv, `mood: ${mood}`)
-		: `${block}\nmood: ${mood}`;
+	if (slug) {
+		fields.push({key: 'slug', value: quoteYamlString(slug)});
+	}
+
+	if (tags) {
+		fields.push({key: 'tags', value: `[${tags.join(', ')}]`});
+	}
+
+	if (!match) {
+		return `---\n${fields
+			.map(field => `${field.key}: ${field.value}`)
+			.join('\n')}\n---\n\n${trimmed}`.trim();
+	}
+
+	let nextBlock = match[1] ?? '';
+	for (const field of fields) {
+		const fieldPattern = new RegExp(String.raw`^\s*${field.key}\s*:.*$`, 'imv');
+		if (fieldPattern.test(nextBlock)) {
+			if (field.key === 'mood') {
+				nextBlock = nextBlock.replace(
+					fieldPattern,
+					`${field.key}: ${field.value}`,
+				);
+			}
+
+			continue;
+		}
+
+		nextBlock = nextBlock
+			? `${nextBlock}\n${field.key}: ${field.value}`
+			: `${field.key}: ${field.value}`;
+	}
+
 	const body = trimmed.slice(match[0].length).trimStart();
 	return `---\n${nextBlock}\n---\n\n${body}`.trim();
 };
+
+export const upsertMoodFrontmatter = (content: string, mood?: string) =>
+	upsertJournalFrontmatter(content, {mood});
 
 export const parseMoodFrontmatter = (
 	content: string,
