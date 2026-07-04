@@ -6,8 +6,8 @@ import {
 	handleHomeInput,
 	handleMoodCheckInInput,
 	handleMoodTrackerInput,
-} from '../app-input-handlers.js';
-import type {Screen} from '../types.js';
+} from '../app/input-handlers.js';
+import type {Screen} from '../app/types.js';
 import type {JournalMood} from '../utils/journal-frontmatter.js';
 import type {useCalendarEntries} from './use-calendar-entries.js';
 import type {useFindEntries} from './use-find-entries.js';

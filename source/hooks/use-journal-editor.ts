@@ -1,7 +1,7 @@
 import {join} from 'node:path';
 import process from 'node:process';
 import React from 'react';
-import type {Screen} from '../types.js';
+import type {Screen} from '../app/types.js';
 import {openJournalInEditor} from '../utils/journal-editor.js';
 import {
 	type JournalMood,

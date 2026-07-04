@@ -1,7 +1,7 @@
 import process from 'node:process';
 import React from 'react';
 import {useApp} from 'ink';
-import AppScreen from './app-screen.js';
+import AppScreen from './app/screen.js';
 import MainFrame from './components/main-frame.js';
 import {useAppInput} from './hooks/use-app-input.js';
 import {useCalendarEntries} from './hooks/use-calendar-entries.js';
@@ -10,7 +10,8 @@ import {useJournalEditor} from './hooks/use-journal-editor.js';
 import {useMoodTracker} from './hooks/use-mood-tracker.js';
 import {useProjectSettings} from './hooks/use-project-settings.js';
 import MoodCommandSelect from './screens/mood-command-select.js';
-import type {Screen} from './types.js';
+import PostInitPrompt from './screens/post-init-prompt.js';
+import type {Screen} from './app/types.js';
 import type {JournalMood} from './utils/journal-frontmatter.js';
 import type {ProjectInitSubmitInput} from './hooks/use-project-init-form.js';
 
@@ -19,7 +20,6 @@ type Props = {
 	readonly initialMood?: JournalMood;
 	readonly invalidMood?: string;
 	readonly now?: Date;
-	readonly onPostInitNextStep?: (command: string) => void;
 	readonly postInitCdCommand?: string;
 	readonly screen: Screen;
 };
@@ -29,7 +29,6 @@ export default function App({
 	initialMood = 'neutral',
 	invalidMood,
 	now,
-	onPostInitNextStep,
 	postInitCdCommand,
 	screen,
 }: Props) {
@@ -37,6 +36,10 @@ export default function App({
 	const [activeScreen, setActiveScreen] = React.useState<Screen>(screen);
 	const [mood, setMood] = React.useState<JournalMood>(initialMood);
 	const [invalidMoodInput, setInvalidMoodInput] = React.useState(invalidMood);
+	const [postInitPrompt, setPostInitPrompt] = React.useState<{
+		readonly command: string;
+		readonly userName: string;
+	}>();
 	const [moodCheckInSelectedIndex, setMoodCheckInSelectedIndex] =
 		React.useState(0);
 	const project = useProjectSettings(configDirectory);
@@ -67,14 +70,16 @@ export default function App({
 		async (input: ProjectInitSubmitInput) => {
 			await project.completeProjectInit(input);
 			if (postInitCdCommand && postInitCdCommand !== 'cd .') {
-				onPostInitNextStep?.(postInitCdCommand);
-				exit();
+				setPostInitPrompt({
+					command: postInitCdCommand,
+					userName: input.name,
+				});
 				return;
 			}
 
 			setActiveScreen('home');
 		},
-		[exit, onPostInitNextStep, postInitCdCommand, project],
+		[postInitCdCommand, project],
 	);
 
 	const writeWithMood = React.useCallback(
@@ -164,6 +169,16 @@ export default function App({
 			<MoodCommandSelect
 				invalidMood={invalidMoodInput}
 				onSelectMood={writeWithMood}
+			/>
+		);
+	}
+
+	if (postInitPrompt) {
+		return (
+			<PostInitPrompt
+				cdCommand={postInitPrompt.command}
+				userName={postInitPrompt.userName}
+				onExit={exit}
 			/>
 		);
 	}
