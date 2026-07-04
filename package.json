@@ -1,6 +1,9 @@
 {
 	"name": "jerd",
 	"version": "3.0.10",
+	"author": {
+		"name": "Shamim"
+	},
 	"license": "MIT",
 	"bin": "dist/cli.js",
 	"type": "module",
