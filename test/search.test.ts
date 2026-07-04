@@ -35,6 +35,14 @@ test('search indexes current-format files and ignores old date-dashed files', as
 			query: 'work',
 			rootDirectory: directory,
 		});
+		const contentResults = await searchEntries({
+			query: 'PLANNING',
+			rootDirectory: directory,
+		});
+		const dateResults = await searchEntries({
+			query: '2026-06-07',
+			rootDirectory: directory,
+		});
 		const oldResults = await searchEntries({
 			query: 'old file',
 			rootDirectory: directory,
@@ -45,6 +53,11 @@ test('search indexes current-format files and ignores old date-dashed files', as
 			[join('2026', 'june', '2026_june_07.md')],
 		);
 		t.is(tagResults[0]?.date, '2026-06-07');
+		t.is(tagResults[0]?.matchLine, undefined);
+		t.is(contentResults[0]?.matchLine, 'Readable planning notes');
+		t.deepEqual(contentResults[0]?.matchRanges, [{start: 9, end: 17}]);
+		t.is(dateResults[0]?.date, '2026-06-07');
+		t.is(dateResults[0]?.matchLine, undefined);
 		t.deepEqual(oldResults, []);
 	});
 });

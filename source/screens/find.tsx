@@ -1,6 +1,6 @@
 import {TextInput} from '@inkjs/ui';
 import {Box, Text} from 'ink';
-import SearchResultList from '../components/search-result-list.js';
+import SearchResultList from '../components/find/search-result-list.js';
 import {colors} from '../theme/colors.js';
 import type {SearchResult} from '../utils/journal-search.js';
 
