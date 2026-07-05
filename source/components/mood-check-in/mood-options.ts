@@ -1,5 +1,7 @@
 import type {JournalMood} from '../../utils/journal-frontmatter.js';
 
+// Order matters: keyboard navigation and the mood selector both use these
+// positions when moving through the available mood choices.
 export const moodOptions: Array<{
 	readonly label: string;
 	readonly mood: JournalMood;

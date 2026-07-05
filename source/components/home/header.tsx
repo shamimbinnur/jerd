@@ -7,6 +7,8 @@ type Props = {
 	readonly userName?: string;
 };
 
+// Keep the brand mark separate from the greeting so the header spacing remains
+// consistent whether or not a project user name is configured.
 export default function Header({now, userName}: Props) {
 	return (
 		<Box flexDirection="column">

@@ -74,6 +74,7 @@ export default function AppScreen({
 		return (
 			<Find
 				isOpening={find.isOpening}
+				now={now}
 				query={find.query}
 				results={find.results}
 				selectedIndex={find.selectedIndex}

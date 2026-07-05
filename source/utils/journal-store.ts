@@ -5,9 +5,9 @@ import {
 	type JournalMood,
 	normalizeLineEndings,
 	parseMoodFrontmatter,
-	upsertMoodFrontmatter,
+	upsertJournalFrontmatter,
 } from './journal-frontmatter.js';
-import {getJournalLocation, pad2} from './journal-paths.js';
+import {getJournalLocation, pad2, toDateSlug} from './journal-paths.js';
 
 const timestamp = (now: Date) =>
 	`${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(
@@ -49,7 +49,11 @@ export const saveJournalEntry = async ({
 	readonly mode?: 'append' | 'replace';
 }) => {
 	const {directoryPath, filePath} = getJournalLocation(rootDirectory, now);
-	const entryContent = upsertMoodFrontmatter(content, mood);
+	const entryContent = upsertJournalFrontmatter(content, {
+		mood,
+		slug: toDateSlug(now),
+		tags: [],
+	});
 
 	await mkdir(directoryPath, {recursive: true});
 
@@ -80,7 +84,11 @@ export const saveJournalEntryByPath = async ({
 	readonly mood?: string;
 	readonly path: string;
 }) => {
-	await writeFile(path, `${upsertMoodFrontmatter(content, mood)}\n`, 'utf8');
+	await writeFile(
+		path,
+		`${upsertJournalFrontmatter(content, {mood})}\n`,
+		'utf8',
+	);
 	return path;
 };
 

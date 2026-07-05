@@ -1,6 +1,8 @@
 import {Box} from 'ink';
-import ActionTile from '../action-tile.js';
+import ActionTile from './action-tile.js';
 
+// The home screen presents actions in a fixed 2x2 grid, so the action order
+// here also defines their visual position.
 const actions = [
 	{id: 'write', label: 'Write', shortcut: 'w'},
 	{id: 'find', label: 'Find', shortcut: 'f'},

@@ -7,6 +7,7 @@ type Props = {
 	readonly now: Date;
 };
 
+// Keep large counts compact so the BigText value stays inside the summary box.
 const formatEntryCount = (count: number) => {
 	if (count < 1000) {
 		return String(count);

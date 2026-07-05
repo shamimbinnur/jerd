@@ -1,6 +1,6 @@
 import React from 'react';
 import {Box, Text} from 'ink';
-import {colors} from '../theme/colors.js';
+import {colors} from '../../theme/colors.js';
 
 type Props = {
 	readonly children: React.ReactNode;
@@ -8,6 +8,9 @@ type Props = {
 
 const innerHeight = 27;
 const contentPaddingX = 1;
+
+// The binding pattern is repeated to fill the fixed-height frame, keeping the
+// notebook spine visually stable across all screens.
 const bindingPattern = ['⊂⊃┆', '│ ┆', '⊂⊃┆', '  ┆'] as const;
 const spiral = Array.from({length: innerHeight}, (_, position) => ({
 	id: `spiral-tick-${position}`,

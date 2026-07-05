@@ -13,18 +13,34 @@ export type ParsedDate = {
 
 export type SearchResult = {
 	readonly date: string;
+	readonly matchLine?: string;
+	readonly matchRanges?: readonly HighlightRange[];
 	readonly path: string;
 	readonly preview: string;
 	readonly score: number;
 };
 
+export type HighlightRange = {
+	readonly end: number;
+	readonly start: number;
+};
+
 type IndexedEntry = {
-	readonly content: string;
+	readonly bodyContent: string;
 	readonly date: string;
 	readonly path: string;
 	readonly preview: string;
 	readonly tags: string[];
 };
+
+const maxMatchLineLength = 120;
+
+const searchTerms = (query: string) =>
+	query
+		.toLowerCase()
+		.split(/\s+/v)
+		.map(term => term.trim())
+		.filter(Boolean);
 
 const derivePreview = (content: string) => {
 	const lines = stripFrontmatter(content)
@@ -34,13 +50,105 @@ const derivePreview = (content: string) => {
 	return lines.find(Boolean)?.slice(0, 100) ?? '(empty entry)';
 };
 
+const highlightRangesForLine = (
+	line: string,
+	terms: readonly string[],
+): HighlightRange[] => {
+	const lowerLine = line.toLowerCase();
+	const ranges = terms.flatMap(term => {
+		const matches: HighlightRange[] = [];
+		let startIndex = 0;
+		while (startIndex < lowerLine.length) {
+			const matchIndex = lowerLine.indexOf(term, startIndex);
+			if (matchIndex === -1) {
+				break;
+			}
+
+			matches.push({start: matchIndex, end: matchIndex + term.length});
+			startIndex = matchIndex + term.length;
+		}
+
+		return matches;
+	});
+
+	const merged: HighlightRange[] = [];
+	for (const range of ranges.toSorted(
+		(a, b) => a.start - b.start || b.end - a.end,
+	)) {
+		const previous = merged.at(-1);
+		if (!previous || range.start >= previous.end) {
+			merged.push(range);
+		}
+	}
+
+	return merged;
+};
+
+const trimMatchLine = (
+	line: string,
+	ranges: readonly HighlightRange[],
+): {line: string; ranges: readonly HighlightRange[]} => {
+	if (line.length <= maxMatchLineLength || ranges.length === 0) {
+		return {line, ranges};
+	}
+
+	const firstMatch = ranges[0];
+	if (!firstMatch) {
+		return {line, ranges};
+	}
+
+	const sliceStart = Math.max(
+		0,
+		Math.min(firstMatch.start - 40, line.length - maxMatchLineLength),
+	);
+	const sliceEnd = sliceStart + maxMatchLineLength;
+	const prefix = sliceStart > 0 ? '...' : '';
+	const suffix = sliceEnd < line.length ? '...' : '';
+	const nextLine = `${prefix}${line.slice(sliceStart, sliceEnd)}${suffix}`;
+	const nextRanges = ranges
+		.map(range => ({
+			start: Math.max(range.start, sliceStart) - sliceStart + prefix.length,
+			end: Math.min(range.end, sliceEnd) - sliceStart + prefix.length,
+		}))
+		.filter(range => range.end > range.start);
+
+	return {line: nextLine, ranges: nextRanges};
+};
+
+const deriveMatch = (
+	bodyContent: string,
+	terms: readonly string[],
+):
+	| {
+			readonly matchLine: string;
+			readonly matchRanges: readonly HighlightRange[];
+	  }
+	| undefined => {
+	const line = bodyContent
+		.split('\n')
+		.map(currentLine => currentLine.trim())
+		.find(currentLine => {
+			const lowerLine = currentLine.toLowerCase();
+			return terms.some(term => lowerLine.includes(term));
+		});
+
+	if (!line) {
+		return undefined;
+	}
+
+	const match = trimMatchLine(line, highlightRangesForLine(line, terms));
+	return match.ranges.length > 0
+		? {matchLine: match.line, matchRanges: match.ranges}
+		: undefined;
+};
+
 const enumerateEntries = async (rootDirectory: string) => {
 	const files = await listJournalFiles(rootDirectory);
 	return Promise.all(
 		files.map(async file => {
 			const content = await readFile(file.fullPath, 'utf8').catch(() => '');
 			return {
-				content,
+				bodyContent: stripFrontmatter(content),
 				date: file.isoDate,
 				path: file.relativePath,
 				preview: derivePreview(content),
@@ -95,18 +203,13 @@ export const parseDateQuery = (
 	return undefined;
 };
 
-const scoreTextMatch = (entry: IndexedEntry, query: string) => {
-	const terms = query
-		.toLowerCase()
-		.split(/\s+/v)
-		.map(term => term.trim())
-		.filter(Boolean);
+const scoreTextMatch = (entry: IndexedEntry, terms: readonly string[]) => {
 	if (terms.length === 0) {
 		return 0;
 	}
 
 	const path = entry.path.toLowerCase();
-	const content = entry.content.toLowerCase();
+	const content = entry.bodyContent.toLowerCase();
 	const preview = entry.preview.toLowerCase();
 	const tags = entry.tags.join(' ');
 	let score = 0;
@@ -144,7 +247,7 @@ export const searchEntries = async ({
 	readonly now?: Date;
 	readonly query: string;
 	readonly rootDirectory: string;
-}) => {
+}): Promise<SearchResult[]> => {
 	const entries = await enumerateEntries(rootDirectory);
 	const trimmed = query.trim();
 	if (!trimmed) {
@@ -158,6 +261,7 @@ export const searchEntries = async ({
 			}));
 	}
 
+	const terms = searchTerms(trimmed);
 	const parsedDate = parseDateQuery(trimmed, now);
 	if (parsedDate) {
 		return entries
@@ -171,12 +275,16 @@ export const searchEntries = async ({
 	}
 
 	return entries
-		.map(entry => ({
-			date: entry.date,
-			path: entry.path,
-			preview: entry.preview,
-			score: scoreTextMatch(entry, trimmed),
-		}))
+		.map(entry => {
+			const match = deriveMatch(entry.bodyContent, terms);
+			return {
+				date: entry.date,
+				...match,
+				path: entry.path,
+				preview: entry.preview,
+				score: scoreTextMatch(entry, terms),
+			};
+		})
 		.filter(entry => entry.score > 0)
 		.toSorted((a, b) => {
 			if (b.score === a.score) {

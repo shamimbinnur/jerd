@@ -11,6 +11,7 @@ type Props = {
 };
 
 const padDay = (day: number) => String(day).padStart(2, ' ');
+const calendarCellWidth = 5;
 
 export default function Calendar({
 	entryDays,
@@ -49,7 +50,7 @@ export default function Calendar({
 			>
 				<Box marginBottom={1}>
 					{weekLabels.map(label => (
-						<Box key={label} width={4}>
+						<Box key={label} width={calendarCellWidth}>
 							<Text color={colors.textHint}>{label}</Text>
 						</Box>
 					))}
@@ -62,7 +63,7 @@ export default function Calendar({
 								return (
 									<Box
 										key={`empty-${String(rowIndex)}-${String(dayIndex)}`}
-										width={4}
+										width={calendarCellWidth}
 									>
 										<Text> </Text>
 									</Box>
@@ -72,7 +73,7 @@ export default function Calendar({
 							const hasEntry = entryDays.has(day);
 							const isSelected = day === selectedDay;
 							return (
-								<Box key={`day-${String(day)}`} width={4}>
+								<Box key={`day-${String(day)}`} width={calendarCellWidth}>
 									<Text
 										bold={isSelected}
 										color={
@@ -102,7 +103,9 @@ export default function Calendar({
 			</Box>
 
 			<Box marginTop={status ? 0 : 1}>
-				<Text color={colors.textHint}>Use ← ↑ ↓ → to navigate</Text>
+				<Text color={colors.textHint}>
+					Use ← ↑ ↓ → to navigate; press ESC to return to main menu
+				</Text>
 			</Box>
 		</Box>
 	);
