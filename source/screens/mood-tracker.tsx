@@ -18,6 +18,7 @@ type Props = {
 };
 
 const padDay = (day: number) => String(day).padStart(2, '0');
+const moodCellWidth = 5;
 
 export default function MoodTracker({month, moodsByDay, year}: Props) {
 	const {label: monthLabel, rows} = buildMonthGrid({month, year});
@@ -45,7 +46,7 @@ export default function MoodTracker({month, moodsByDay, year}: Props) {
 			>
 				<Box marginBottom={1}>
 					{weekLabels.map(label => (
-						<Box key={label} width={4}>
+						<Box key={label} width={moodCellWidth}>
 							<Text color={colors.textHint}>{label}</Text>
 						</Box>
 					))}
@@ -58,7 +59,7 @@ export default function MoodTracker({month, moodsByDay, year}: Props) {
 								return (
 									<Box
 										key={`empty-${String(rowIndex)}-${String(dayIndex)}`}
-										width={4}
+										width={moodCellWidth}
 									>
 										<Text> </Text>
 									</Box>
@@ -67,7 +68,7 @@ export default function MoodTracker({month, moodsByDay, year}: Props) {
 
 							const mood = moodsByDay.get(day);
 							return (
-								<Box key={`day-${String(day)}`} width={4}>
+								<Box key={`day-${String(day)}`} width={moodCellWidth}>
 									<Text
 										backgroundColor={mood ? moodColors[mood] : undefined}
 										color={mood ? colors.homeActionText : colors.textHint}
@@ -82,7 +83,9 @@ export default function MoodTracker({month, moodsByDay, year}: Props) {
 			</Box>
 
 			<Box marginTop={1}>
-				<Text color={colors.textHint}>Use ← → to navigate months</Text>
+				<Text color={colors.textHint}>
+					Use ← → to navigate months; press ESC to return to main menu
+				</Text>
 			</Box>
 		</Box>
 	);

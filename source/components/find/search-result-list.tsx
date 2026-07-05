@@ -1,4 +1,4 @@
-import {Chalk} from 'chalk';
+import type React from 'react';
 import {Box, Text} from 'ink';
 import {colors} from '../../theme/colors.js';
 import type {HighlightRange, SearchResult} from '../../utils/journal-search.js';
@@ -14,11 +14,8 @@ const maxVisibleResults = 12;
 // Keep this aligned with the frame content width so separators and wrapped
 // match snippets do not trigger Ink's automatic wrapping.
 const resultWidth = 43;
+const selectedResultMarker = '➜ ';
 const separator = '-'.repeat(resultWidth);
-const terminalColors = new Chalk({level: 3});
-
-const colorText = (text: string, color: string) =>
-	terminalColors.hex(color)(text);
 
 // Preserve each wrapped row's original start offset so highlight ranges from
 // the full match line can still be projected onto the visible row.
@@ -53,7 +50,7 @@ const renderHighlightedLine = (
 	offset = 0,
 ) => {
 	let cursor = 0;
-	const segments: string[] = [];
+	const segments: React.JSX.Element[] = [];
 
 	for (const range of ranges) {
 		const start = range.start - offset;
@@ -68,21 +65,29 @@ const renderHighlightedLine = (
 
 		if (boundedStart > cursor) {
 			segments.push(
-				colorText(line.slice(cursor, boundedStart), colors.textHint),
+				<Text key={`text-${cursor}`} color={colors.textHint}>
+					{line.slice(cursor, boundedStart)}
+				</Text>,
 			);
 		}
 
 		segments.push(
-			colorText(line.slice(boundedStart, boundedEnd), colors.successAccent),
+			<Text key={`match-${boundedStart}`} color={colors.successAccent}>
+				{line.slice(boundedStart, boundedEnd)}
+			</Text>,
 		);
 		cursor = boundedEnd;
 	}
 
 	if (cursor < line.length) {
-		segments.push(colorText(line.slice(cursor), colors.textHint));
+		segments.push(
+			<Text key={`text-${cursor}`} color={colors.textHint}>
+				{line.slice(cursor)}
+			</Text>,
+		);
 	}
 
-	return segments.join('');
+	return segments;
 };
 
 export default function SearchResultList({
@@ -109,7 +114,7 @@ export default function SearchResultList({
 				return (
 					<Box key={result.path} flexDirection="column">
 						<Text color={isSelected ? colors.brand : colors.textHint}>
-							{isSelected ? '> ' : ''}
+							{isSelected ? selectedResultMarker : ''}
 							{result.date} | {result.preview}
 						</Text>
 						{isSelected && result.matchLine && result.matchRanges ? (
