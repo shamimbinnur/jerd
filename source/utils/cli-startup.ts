@@ -35,6 +35,7 @@ type ResolveCliStartupInput = {
 	readonly command?: string;
 	readonly cwd: string;
 	readonly directory?: string;
+	readonly findQueryParts?: readonly string[];
 	readonly hasCurrentProjectConfig: boolean;
 	readonly mood?: string;
 	readonly screen?: string;
@@ -59,23 +60,45 @@ export const isStartupScreen = (
 const isStartupCommand = (value: string | undefined): value is StartupCommand =>
 	typeof value === 'string' && Object.hasOwn(commandScreens, value);
 
+const resolveInitialFindQuery = (
+	command: string | undefined,
+	findQueryParts: readonly string[],
+) => {
+	if (command !== 'find') {
+		return undefined;
+	}
+
+	return findQueryParts.join(' ').trim().replaceAll(/\s+/gv, ' ') || undefined;
+};
+
+const resolveInitialMood = (
+	command: string | undefined,
+	moodFlag: string | undefined,
+) => (command === 'new' && moodFlag ? parseJournalMood(moodFlag) : undefined);
+
+const resolveInvalidMood = (
+	command: string | undefined,
+	initialMood: string | undefined,
+	moodFlag: string | undefined,
+) => (command === 'new' && moodFlag && !initialMood ? moodFlag : undefined);
+
 export const resolveCliStartup = ({
 	command,
 	cwd,
 	directory,
+	findQueryParts = [],
 	hasCurrentProjectConfig,
 	mood,
 	screen,
 }: ResolveCliStartupInput) => {
 	const screenFlag = isStartupScreen(screen) ? screen : undefined;
 	const moodFlag = typeof mood === 'string' ? mood.trim() : undefined;
-	const initialMood =
-		command === 'new' && moodFlag ? parseJournalMood(moodFlag) : undefined;
-	const invalidMood =
-		command === 'new' && moodFlag && !initialMood ? moodFlag : undefined;
+	const initialMood = resolveInitialMood(command, moodFlag);
+	const invalidMood = resolveInvalidMood(command, initialMood, moodFlag);
 	const commandScreen = isStartupCommand(command)
 		? commandScreens[command]
 		: undefined;
+	const initialFindQuery = resolveInitialFindQuery(command, findQueryParts);
 	const shouldStartInit =
 		command === 'init' || (!screenFlag && !hasCurrentProjectConfig);
 	const initTarget = shouldStartInit
@@ -87,6 +110,7 @@ export const resolveCliStartup = ({
 
 	return {
 		configDirectory: initTarget?.configDirectory ?? cwd,
+		initialFindQuery,
 		initialMood,
 		invalidMood,
 		postInitCdCommand: initTarget?.cdCommand,

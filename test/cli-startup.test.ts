@@ -60,3 +60,50 @@ test('screen flag can render mood check-in directly', t => {
 
 	t.is(startup.screen, 'mood-check-in');
 });
+
+test('find command without query starts empty find screen', t => {
+	const startup = resolveCliStartup({
+		command: 'find',
+		cwd: '/journal',
+		hasCurrentProjectConfig: true,
+	});
+
+	t.is(startup.screen, 'find');
+	t.is(startup.initialFindQuery, undefined);
+});
+
+test('find command stores quoted search term as initial query', t => {
+	const startup = resolveCliStartup({
+		command: 'find',
+		cwd: '/journal',
+		findQueryParts: ['work notes'],
+		hasCurrentProjectConfig: true,
+	});
+
+	t.is(startup.screen, 'find');
+	t.is(startup.initialFindQuery, 'work notes');
+});
+
+test('find command joins multiple search arguments with spaces', t => {
+	const startup = resolveCliStartup({
+		command: 'find',
+		cwd: '/journal',
+		findQueryParts: ['work', 'notes', 'today'],
+		hasCurrentProjectConfig: true,
+	});
+
+	t.is(startup.screen, 'find');
+	t.is(startup.initialFindQuery, 'work notes today');
+});
+
+test('find command treats whitespace-only query as empty', t => {
+	const startup = resolveCliStartup({
+		command: 'find',
+		cwd: '/journal',
+		findQueryParts: ['  ', '\t'],
+		hasCurrentProjectConfig: true,
+	});
+
+	t.is(startup.screen, 'find');
+	t.is(startup.initialFindQuery, undefined);
+});

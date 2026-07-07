@@ -17,6 +17,7 @@ import type {ProjectInitSubmitInput} from './hooks/use-project-init-form.js';
 
 type Props = {
 	readonly configDirectory?: string;
+	readonly initialFindQuery?: string;
 	readonly initialMood?: JournalMood;
 	readonly invalidMood?: string;
 	readonly now?: Date;
@@ -26,6 +27,7 @@ type Props = {
 
 export default function App({
 	configDirectory = process.cwd(),
+	initialFindQuery,
 	initialMood = 'neutral',
 	invalidMood,
 	now,
@@ -57,6 +59,7 @@ export default function App({
 	const find = useFindEntries({
 		active: activeScreen === 'find',
 		configDirectory,
+		initialQuery: initialFindQuery,
 		now,
 	});
 	const moodTracker = useMoodTracker({

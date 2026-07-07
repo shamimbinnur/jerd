@@ -4,14 +4,16 @@ import {searchEntries, type SearchResult} from '../utils/journal-search.js';
 export const useFindEntries = ({
 	active,
 	configDirectory,
+	initialQuery,
 	now,
 }: {
 	readonly active: boolean;
 	readonly configDirectory: string;
+	readonly initialQuery?: string;
 	readonly now?: Date;
 }) => {
 	const [isOpening, setIsOpening] = React.useState(false);
-	const [query, setQuery] = React.useState('');
+	const [query, setQuery] = React.useState(initialQuery ?? '');
 	const [results, setResults] = React.useState<SearchResult[]>([]);
 	const [selectedIndex, setSelectedIndex] = React.useState(0);
 

@@ -50,7 +50,7 @@ const cli = meow(
 	  $ jerd init [directory]
 	  $ jerd new [--mood mood]
 	  $ jerd open today|yesterday|YYYY-MM-DD
-	  $ jerd find
+	  $ jerd find [search term]
 	  $ jerd cal
 	  $ jerd mood
 
@@ -68,6 +68,8 @@ const cli = meow(
 	  $ jerd open yesterday
 	  $ jerd open 2026-07-07
 	  $ jerd find
+	  $ jerd find "work notes"
+	  $ jerd find today
 	  $ jerd cal
 	  $ jerd mood
 	  $ jerd init
@@ -90,7 +92,7 @@ const cli = meow(
 	},
 );
 
-const [command, directory] = cli.input;
+const [command, directory, ...commandArguments] = cli.input;
 const cwd = process.cwd();
 const hasCurrentProjectConfig = await hasProjectConfig(cwd);
 
@@ -122,6 +124,9 @@ const startup = resolveCliStartup({
 	command,
 	cwd,
 	directory,
+	findQueryParts: [directory, ...commandArguments].filter(
+		(argument): argument is string => typeof argument === 'string',
+	),
 	hasCurrentProjectConfig,
 	mood: cli.flags.mood,
 	screen: cli.flags.screen,
@@ -130,6 +135,7 @@ const startup = resolveCliStartup({
 const app = render(
 	React.createElement(App, {
 		configDirectory: startup.configDirectory,
+		initialFindQuery: startup.initialFindQuery,
 		initialMood: startup.initialMood,
 		invalidMood: startup.invalidMood,
 		postInitCdCommand: startup.postInitCdCommand,

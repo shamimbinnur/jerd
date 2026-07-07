@@ -74,6 +74,9 @@ exists for that date, Jerd exits with an error and does not create a file.
 
 ```bash
 jerd find
+jerd find "work notes"
+jerd find today
+jerd find 2026-05-31
 ```
 
 Search supports:
@@ -83,6 +86,9 @@ Search supports:
 - Relative dates: `3 days ago`, `3 days before`.
 - ISO dates: `2026-05-31`.
 - Text search across path, preview, content, and frontmatter tags.
+
+Passing a search term opens the find screen with that query already in the
+input field and results filtered immediately.
 
 Use the up and down arrows to select a result, then press Enter to open it in
 your editor. Press Escape to return home.

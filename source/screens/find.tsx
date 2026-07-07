@@ -58,17 +58,11 @@ function SearchInput({
 	onSubmit,
 	query,
 }: SearchInputProps) {
-	const [inputQuery, setInputQuery] = React.useState(query);
 	const [cursorOffset, setCursorOffset] = React.useState(query.length);
-	const inputQueryRef = React.useRef(query);
-	const cursorOffsetRef = React.useRef(query.length);
 	const inputColor = isDateQuery ? colors.successAccent : colors.textHint;
 
 	const updateInput = React.useCallback(
 		(nextQuery: string, nextCursorOffset: number) => {
-			inputQueryRef.current = nextQuery;
-			cursorOffsetRef.current = nextCursorOffset;
-			setInputQuery(nextQuery);
 			setCursorOffset(nextCursorOffset);
 			onChange(nextQuery);
 		},
@@ -76,11 +70,8 @@ function SearchInput({
 	);
 
 	useInput((input, key) => {
-		const currentQuery = inputQueryRef.current;
-		const currentCursorOffset = Math.min(
-			cursorOffsetRef.current,
-			currentQuery.length,
-		);
+		const currentQuery = query;
+		const currentCursorOffset = Math.min(cursorOffset, currentQuery.length);
 
 		if (
 			key.upArrow ||
@@ -99,7 +90,6 @@ function SearchInput({
 
 		if (key.leftArrow) {
 			const nextCursorOffset = Math.max(0, currentCursorOffset - 1);
-			cursorOffsetRef.current = nextCursorOffset;
 			setCursorOffset(nextCursorOffset);
 			return;
 		}
@@ -109,7 +99,6 @@ function SearchInput({
 				currentQuery.length,
 				currentCursorOffset + 1,
 			);
-			cursorOffsetRef.current = nextCursorOffset;
 			setCursorOffset(nextCursorOffset);
 			return;
 		}
@@ -138,7 +127,7 @@ function SearchInput({
 		}
 	});
 
-	return renderInputValue(inputQuery, cursorOffset, inputColor);
+	return renderInputValue(query, cursorOffset, inputColor);
 }
 
 export default function Find({

@@ -60,13 +60,20 @@ The date argument supports `today`, `yesterday`, or an ISO date in
 date does not have an entry, Jerd exits with an error and does not create a new
 file. Use `jerd new` to create or mood-check today's entry.
 
-## `jerd find`
+## `jerd find [search term]`
 
 Open the interactive search screen.
 
 ```bash
 jerd find
+jerd find "work notes"
+jerd find today
+jerd find 2026-05-31
 ```
+
+When a search term is provided, Jerd opens the find screen with the input
+already populated and the results filtered. Quoted and unquoted multi-word
+queries are supported.
 
 Use Enter to open the selected result in your editor.
 
