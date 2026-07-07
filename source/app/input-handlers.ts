@@ -46,6 +46,40 @@ type MoodTrackerInput = Navigation & {
 const isSubmitInput = (input: string, isReturnKey: boolean) =>
 	isReturnKey || input === '\r' || input === '\n';
 
+export const homeQuitInputWindowMs = 750;
+
+export const resolveHomeQuitInput = ({
+	input,
+	lastQuitPressAt,
+	now,
+}: {
+	readonly input: string;
+	readonly lastQuitPressAt?: number;
+	readonly now: number;
+}) => {
+	if (input !== 'q') {
+		return {
+			nextQuitPressAt: undefined,
+			shouldQuit: false,
+		};
+	}
+
+	if (
+		typeof lastQuitPressAt === 'number' &&
+		now - lastQuitPressAt <= homeQuitInputWindowMs
+	) {
+		return {
+			nextQuitPressAt: undefined,
+			shouldQuit: true,
+		};
+	}
+
+	return {
+		nextQuitPressAt: now,
+		shouldQuit: false,
+	};
+};
+
 export const handleMoodCheckInInput = ({
 	input,
 	key,

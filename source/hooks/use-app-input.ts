@@ -1,11 +1,12 @@
 import {useInput} from 'ink';
-import type React from 'react';
+import React from 'react';
 import {
 	handleCalendarInput,
 	handleFindInput,
 	handleHomeInput,
 	handleMoodCheckInInput,
 	handleMoodTrackerInput,
+	resolveHomeQuitInput,
 } from '../app/input-handlers.js';
 import type {Screen} from '../app/types.js';
 import type {JournalMood} from '../utils/journal-frontmatter.js';
@@ -25,6 +26,7 @@ type UseAppInputOptions = {
 	readonly isMoodSelectInputActive: boolean;
 	readonly moodCheckInSelectedIndex: number;
 	readonly moodTracker: MoodTracker;
+	readonly onExit: () => void;
 	readonly openSelectedCalendarEntry: () => void;
 	readonly setActiveScreen: React.Dispatch<React.SetStateAction<Screen>>;
 	readonly setMoodCheckInSelectedIndex: React.Dispatch<
@@ -41,11 +43,14 @@ export const useAppInput = ({
 	isMoodSelectInputActive,
 	moodCheckInSelectedIndex,
 	moodTracker,
+	onExit,
 	openSelectedCalendarEntry,
 	setActiveScreen,
 	setMoodCheckInSelectedIndex,
 	writeWithMood,
 }: UseAppInputOptions) => {
+	const lastHomeQuitPressAt = React.useRef<number | undefined>(undefined);
+
 	useInput((input, key) => {
 		if (activeScreen === 'init' || activeScreen === 'project-init') {
 			return;
@@ -108,6 +113,17 @@ export const useAppInput = ({
 		}
 
 		if (activeScreen === 'home') {
+			const quitInput = resolveHomeQuitInput({
+				input: normalizedInput,
+				lastQuitPressAt: lastHomeQuitPressAt.current,
+				now: Date.now(),
+			});
+			lastHomeQuitPressAt.current = quitInput.nextQuitPressAt;
+			if (quitInput.shouldQuit) {
+				onExit();
+				return;
+			}
+
 			handleHomeInput({
 				input: normalizedInput,
 				openCalendar: calendar.resetSelection,

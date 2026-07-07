@@ -163,6 +163,7 @@ export default function App({
 		isMoodSelectInputActive: Boolean(invalidMoodInput),
 		moodCheckInSelectedIndex,
 		moodTracker,
+		onExit: exit,
 		openSelectedCalendarEntry() {
 			void openSelectedCalendarEntry();
 		},
