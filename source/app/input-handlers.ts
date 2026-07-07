@@ -34,8 +34,13 @@ type MoodCheckInInput = Navigation & {
 };
 
 type MoodTrackerInput = Navigation & {
+	readonly completeMonthQuery: () => void;
+	readonly input: string;
 	readonly key: Key;
 	readonly moveMonth: (offset: number) => void;
+	readonly monthQuery: string;
+	readonly submitMonthQuery: () => void;
+	readonly updateMonthQuery: StateSetter<string>;
 };
 
 const isSubmitInput = (input: string, isReturnKey: boolean) =>
@@ -81,12 +86,36 @@ export const handleMoodCheckInInput = ({
 };
 
 export const handleMoodTrackerInput = ({
+	completeMonthQuery,
+	input,
 	key,
 	moveMonth,
+	monthQuery,
 	setActiveScreen,
+	submitMonthQuery,
+	updateMonthQuery,
 }: MoodTrackerInput) => {
 	if (key.escape) {
 		setActiveScreen('home');
+		return;
+	}
+
+	if (key.tab) {
+		completeMonthQuery();
+		return;
+	}
+
+	if (isSubmitInput(input, key.return)) {
+		submitMonthQuery();
+		return;
+	}
+
+	if (key.backspace || key.delete) {
+		if (monthQuery.length === 0) {
+			return;
+		}
+
+		updateMonthQuery(currentQuery => currentQuery.slice(0, -1));
 		return;
 	}
 
@@ -97,6 +126,15 @@ export const handleMoodTrackerInput = ({
 
 	if (key.rightArrow) {
 		moveMonth(1);
+		return;
+	}
+
+	if (key.ctrl || key.meta || key.upArrow || key.downArrow) {
+		return;
+	}
+
+	if (input) {
+		updateMonthQuery(currentQuery => `${currentQuery}${input}`);
 	}
 };
 

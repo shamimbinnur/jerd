@@ -76,9 +76,14 @@ export const useAppInput = ({
 
 		if (activeScreen === 'mood-tracker') {
 			handleMoodTrackerInput({
+				completeMonthQuery: moodTracker.completeMonthQuery,
+				input: normalizedInput,
 				key,
 				moveMonth: moodTracker.moveMonth,
+				monthQuery: moodTracker.monthQuery,
 				setActiveScreen,
+				submitMonthQuery: moodTracker.submitMonthQuery,
+				updateMonthQuery: moodTracker.updateMonthQuery,
 			});
 			return;
 		}
