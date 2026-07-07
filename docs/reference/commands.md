@@ -44,6 +44,22 @@ entry frontmatter. Valid mood values are `happy`, `calm`, `neutral`, `sad`, and
 `angry`. If the mood is misspelled, Jerd opens a selector so you can choose the
 correct mood.
 
+## `jerd open <date>`
+
+Open an existing entry directly in your editor without opening the interactive
+TUI.
+
+```bash
+jerd open today
+jerd open yesterday
+jerd open 2026-07-07
+```
+
+The date argument supports `today`, `yesterday`, or an ISO date in
+`YYYY-MM-DD` format. This command only opens existing entries. If the selected
+date does not have an entry, Jerd exits with an error and does not create a new
+file. Use `jerd new` to create or mood-check today's entry.
+
 ## `jerd find`
 
 Open the interactive search screen.

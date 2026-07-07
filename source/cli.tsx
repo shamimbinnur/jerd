@@ -29,14 +29,16 @@ const [
 	{default: meow},
 	{default: App},
 	{normalizeCliArgv},
+	{openJournalEntryForDate},
 	{resolveCliStartup},
-	{hasProjectConfig},
+	{hasProjectConfig, loadProjectConfig},
 ] = await Promise.all([
 	import('react'),
 	import('ink'),
 	import('meow'),
 	import('./app.js'),
 	import('./utils/cli-argv.js'),
+	import('./utils/open-command.js'),
 	import('./utils/cli-startup.js'),
 	import('./utils/project-config.js'),
 ]);
@@ -47,6 +49,7 @@ const cli = meow(
 	  $ jerd
 	  $ jerd init [directory]
 	  $ jerd new [--mood mood]
+	  $ jerd open today|yesterday|YYYY-MM-DD
 	  $ jerd find
 	  $ jerd cal
 	  $ jerd mood
@@ -61,6 +64,9 @@ const cli = meow(
 	  $ jerd new --mood calm
 	  $ jerd new -mood calm
 	  $ jerd new -m happy
+	  $ jerd open today
+	  $ jerd open yesterday
+	  $ jerd open 2026-07-07
 	  $ jerd find
 	  $ jerd cal
 	  $ jerd mood
@@ -87,6 +93,31 @@ const cli = meow(
 const [command, directory] = cli.input;
 const cwd = process.cwd();
 const hasCurrentProjectConfig = await hasProjectConfig(cwd);
+
+if (command === 'open') {
+	if (!hasCurrentProjectConfig) {
+		console.error(
+			'No jerd.config.json found. Run this from a journal project.',
+		);
+		process.exit(1);
+	}
+
+	try {
+		const projectConfig = await loadProjectConfig(cwd);
+		const relativePath = await openJournalEntryForDate({
+			dateText: directory,
+			editor: projectConfig.editor,
+			rootDirectory: cwd,
+		});
+		console.log(`Saved ${relativePath}`);
+	} catch (error: unknown) {
+		console.error(error instanceof Error ? error.message : 'Open failed');
+		process.exit(1);
+	}
+
+	process.exit(0);
+}
+
 const startup = resolveCliStartup({
 	command,
 	cwd,

@@ -58,6 +58,18 @@ mood: happy
 ---
 ```
 
+## Open Existing Entry
+
+```bash
+jerd open today
+jerd open yesterday
+jerd open 2026-07-07
+```
+
+Use `jerd open` to edit an existing entry without opening the interactive TUI.
+The date argument supports `today`, `yesterday`, or `YYYY-MM-DD`. If no entry
+exists for that date, Jerd exits with an error and does not create a file.
+
 ## Find
 
 ```bash

@@ -92,6 +92,17 @@ export const saveJournalEntryByPath = async ({
 	return path;
 };
 
+export const replaceJournalEntryByPath = async ({
+	content,
+	path,
+}: {
+	readonly content: string;
+	readonly path: string;
+}) => {
+	await writeFile(path, `${normalizeLineEndings(content).trim()}\n`, 'utf8');
+	return path;
+};
+
 export const countJournalEntries = async ({
 	rootDirectory,
 }: {
