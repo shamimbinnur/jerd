@@ -89,10 +89,11 @@ Use Enter to open the selected day when that day has an entry.
 
 ## `jerd mood`
 
-Open the mood graph.
+Open the mood graph. Pass a short month and year to start on that month.
 
 ```bash
 jerd mood
+jerd mood jul 2026
 ```
 
 Use left and right arrows to move between months.

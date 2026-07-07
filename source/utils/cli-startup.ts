@@ -1,5 +1,9 @@
 import {resolveInitTarget} from './init-target.js';
 import {parseJournalMood} from './journal-frontmatter.js';
+import {
+	parseMoodMonthQuery,
+	type MoodMonthQueryResult,
+} from './mood-month-query.js';
 
 export type StartupScreen =
 	| 'calendar'
@@ -38,6 +42,7 @@ type ResolveCliStartupInput = {
 	readonly findQueryParts?: readonly string[];
 	readonly hasCurrentProjectConfig: boolean;
 	readonly mood?: string;
+	readonly moodMonthQueryParts?: readonly string[];
 	readonly screen?: string;
 };
 
@@ -71,6 +76,21 @@ const resolveInitialFindQuery = (
 	return findQueryParts.join(' ').trim().replaceAll(/\s+/gv, ' ') || undefined;
 };
 
+const resolveInitialMoodTrackerMonth = (
+	command: string | undefined,
+	moodMonthQueryParts: readonly string[],
+): MoodMonthQueryResult | undefined => {
+	if (command !== 'mood') {
+		return undefined;
+	}
+
+	const monthQuery = moodMonthQueryParts
+		.join(' ')
+		.trim()
+		.replaceAll(/\s+/gv, ' ');
+	return monthQuery ? parseMoodMonthQuery(monthQuery) : undefined;
+};
+
 const resolveInitialMood = (
 	command: string | undefined,
 	moodFlag: string | undefined,
@@ -89,6 +109,7 @@ export const resolveCliStartup = ({
 	findQueryParts = [],
 	hasCurrentProjectConfig,
 	mood,
+	moodMonthQueryParts = [],
 	screen,
 }: ResolveCliStartupInput) => {
 	const screenFlag = isStartupScreen(screen) ? screen : undefined;
@@ -99,6 +120,10 @@ export const resolveCliStartup = ({
 		? commandScreens[command]
 		: undefined;
 	const initialFindQuery = resolveInitialFindQuery(command, findQueryParts);
+	const initialMoodTrackerMonth = resolveInitialMoodTrackerMonth(
+		command,
+		moodMonthQueryParts,
+	);
 	const shouldStartInit =
 		command === 'init' || (!screenFlag && !hasCurrentProjectConfig);
 	const initTarget = shouldStartInit
@@ -111,6 +136,7 @@ export const resolveCliStartup = ({
 	return {
 		configDirectory: initTarget?.configDirectory ?? cwd,
 		initialFindQuery,
+		initialMoodTrackerMonth,
 		initialMood,
 		invalidMood,
 		postInitCdCommand: initTarget?.cdCommand,

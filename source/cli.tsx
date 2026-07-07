@@ -52,7 +52,7 @@ const cli = meow(
 	  $ jerd open today|yesterday|YYYY-MM-DD
 	  $ jerd find [search term]
 	  $ jerd cal
-	  $ jerd mood
+	  $ jerd mood [mon YYYY]
 
 	Options
 		--mood, -mood, -m  Mood for jerd new: happy, calm, neutral, sad, or angry
@@ -72,6 +72,7 @@ const cli = meow(
 	  $ jerd find today
 	  $ jerd cal
 	  $ jerd mood
+	  $ jerd mood jul 2026
 	  $ jerd init
 	  $ jerd init .
 	  $ jerd init my-journal
@@ -129,6 +130,9 @@ const startup = resolveCliStartup({
 	),
 	hasCurrentProjectConfig,
 	mood: cli.flags.mood,
+	moodMonthQueryParts: [directory, ...commandArguments].filter(
+		(argument): argument is string => typeof argument === 'string',
+	),
 	screen: cli.flags.screen,
 });
 
@@ -136,6 +140,7 @@ const app = render(
 	React.createElement(App, {
 		configDirectory: startup.configDirectory,
 		initialFindQuery: startup.initialFindQuery,
+		initialMoodTrackerMonth: startup.initialMoodTrackerMonth,
 		initialMood: startup.initialMood,
 		invalidMood: startup.invalidMood,
 		postInitCdCommand: startup.postInitCdCommand,

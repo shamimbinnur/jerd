@@ -109,6 +109,7 @@ The calendar shows the current month. Days with entries are highlighted.
 
 ```bash
 jerd mood
+jerd mood jul 2026
 ```
 
 The mood graph shows the selected month with days colored by the mood saved in

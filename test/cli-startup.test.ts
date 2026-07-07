@@ -107,3 +107,27 @@ test('find command treats whitespace-only query as empty', t => {
 	t.is(startup.screen, 'find');
 	t.is(startup.initialFindQuery, undefined);
 });
+
+test('mood command stores an initial mood tracker month', t => {
+	const startup = resolveCliStartup({
+		command: 'mood',
+		cwd: '/journal',
+		hasCurrentProjectConfig: true,
+		moodMonthQueryParts: ['jul', '2026'],
+	});
+
+	t.is(startup.screen, 'mood-tracker');
+	t.deepEqual(startup.initialMoodTrackerMonth, {month: 7, year: 2026});
+});
+
+test('mood command ignores invalid initial month queries', t => {
+	const startup = resolveCliStartup({
+		command: 'mood',
+		cwd: '/journal',
+		hasCurrentProjectConfig: true,
+		moodMonthQueryParts: ['julyish', '2026'],
+	});
+
+	t.is(startup.screen, 'mood-tracker');
+	t.is(startup.initialMoodTrackerMonth, undefined);
+});

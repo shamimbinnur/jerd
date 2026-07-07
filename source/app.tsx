@@ -13,12 +13,14 @@ import MoodCommandSelect from './screens/mood-command-select.js';
 import PostInitPrompt from './screens/post-init-prompt.js';
 import type {Screen} from './app/types.js';
 import type {JournalMood} from './utils/journal-frontmatter.js';
+import type {MoodMonthQueryResult} from './utils/mood-month-query.js';
 import type {ProjectInitSubmitInput} from './hooks/use-project-init-form.js';
 
 type Props = {
 	readonly configDirectory?: string;
 	readonly initialFindQuery?: string;
 	readonly initialMood?: JournalMood;
+	readonly initialMoodTrackerMonth?: MoodMonthQueryResult;
 	readonly invalidMood?: string;
 	readonly now?: Date;
 	readonly postInitCdCommand?: string;
@@ -29,6 +31,7 @@ export default function App({
 	configDirectory = process.cwd(),
 	initialFindQuery,
 	initialMood = 'neutral',
+	initialMoodTrackerMonth,
 	invalidMood,
 	now,
 	postInitCdCommand,
@@ -65,6 +68,7 @@ export default function App({
 	const moodTracker = useMoodTracker({
 		active: activeScreen === 'mood-tracker',
 		configDirectory,
+		initialMonth: initialMoodTrackerMonth,
 		journalEntryCount: journal.entryCount,
 		now,
 	});

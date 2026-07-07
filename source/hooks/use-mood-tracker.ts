@@ -3,25 +3,36 @@ import type {JournalMood} from '../utils/journal-frontmatter.js';
 import {getJournalMoodMapForMonth} from '../utils/journal-store.js';
 import {
 	completeMoodMonthQuery,
+	type MoodMonthQueryResult,
 	parseMoodMonthQuery,
 } from '../utils/mood-month-query.js';
 
 const firstDayOfMonth = (date: Date) =>
 	new Date(date.getFullYear(), date.getMonth(), 1);
 
+const getInitialMonth = (
+	initialMonth: MoodMonthQueryResult | undefined,
+	now: Date | undefined,
+) =>
+	initialMonth
+		? new Date(initialMonth.year, initialMonth.month - 1, 1)
+		: firstDayOfMonth(now ?? new Date());
+
 export const useMoodTracker = ({
 	active,
 	configDirectory,
+	initialMonth,
 	journalEntryCount,
 	now,
 }: {
 	readonly active: boolean;
 	readonly configDirectory: string;
+	readonly initialMonth?: MoodMonthQueryResult;
 	readonly journalEntryCount: number;
 	readonly now?: Date;
 }) => {
 	const [month, setMonth] = React.useState(() =>
-		firstDayOfMonth(now ?? new Date()),
+		getInitialMonth(initialMonth, now),
 	);
 	const [moodsByDay, setMoodsByDay] = React.useState<Map<number, JournalMood>>(
 		new Map<number, JournalMood>(),
