@@ -16,6 +16,15 @@ export const colors = {
 	optionNoTextActive: '#FFF7F5',
 	optionBorderInactive: '#2B3138',
 	successAccent: '#4FD98C',
+
+	// Moods
+	moodCalm: '#8ce6b5',
+	moodHappy: '#3eda72',
+	moodSad: '#3f3f3b',
+	moodAnxious: '#9C9C94',
+	moodAngry: '#E5484D',
+
+	// Accents
 	farewellBorder: '#FF5A1F',
 	farewellProgressElapsed: '#7A1A00',
 } as const;

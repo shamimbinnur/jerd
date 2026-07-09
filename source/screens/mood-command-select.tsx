@@ -27,7 +27,7 @@ export default function MoodCommandSelect({invalidMood, onSelectMood}: Props) {
 			</Box>
 
 			<Select
-				defaultValue="neutral"
+				defaultValue="calm"
 				options={selectOptions}
 				onChange={value => {
 					const mood = parseJournalMood(value);

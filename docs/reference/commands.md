@@ -40,7 +40,7 @@ jerd new -m happy
 
 Entries are saved in replace mode for the current day, so editing an existing
 entry updates that day's Markdown file. The selected mood is saved in the
-entry frontmatter. Valid mood values are `happy`, `calm`, `neutral`, `sad`, and
+entry frontmatter. Valid mood values are `calm`, `happy`, `sad`, `anxious`, and
 `angry`. If the mood is misspelled, Jerd opens a selector so you can choose the
 correct mood.
 
@@ -96,7 +96,8 @@ jerd mood
 jerd mood jul 2026
 ```
 
-Use left and right arrows to move between months.
+Days with moods are colored and include the mood short form, such as `07-H` or
+`12-X`. Use left and right arrows to move between months.
 
 ## `--screen`
 

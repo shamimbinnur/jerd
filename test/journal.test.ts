@@ -73,7 +73,7 @@ test('monthly maps include only current-format journal files', async t => {
 		await mkdir(monthDirectory, {recursive: true});
 		await writeFile(
 			join(monthDirectory, '2026_june_07.md'),
-			'---\nmood: calm\n---\n\nModern',
+			'---\nmood: anxious\n---\n\nModern',
 		);
 		await writeFile(join(monthDirectory, '2026-06-08.md'), 'Old');
 
@@ -97,7 +97,7 @@ test('monthly maps include only current-format journal files', async t => {
 			[...paths.entries()],
 			[[7, join('2026', 'june', '2026_june_07.md')]],
 		);
-		t.deepEqual([...moods.entries()], [[7, 'calm']]);
+		t.deepEqual([...moods.entries()], [[7, 'anxious']]);
 		t.is(entryCount, 1);
 		t.is(oldContent, 'Old');
 	});

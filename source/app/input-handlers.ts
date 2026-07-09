@@ -114,7 +114,7 @@ export const handleMoodCheckInInput = ({
 	}
 
 	if (isSubmitInput(input, key.return)) {
-		const selectedMood = moodOptions[selectedIndex]?.mood ?? 'neutral';
+		const selectedMood = moodOptions[selectedIndex]?.mood ?? 'calm';
 		writeWithMood(selectedMood);
 	}
 };

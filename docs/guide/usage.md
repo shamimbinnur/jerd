@@ -44,10 +44,10 @@ correct mood.
 
 Before opening the editor, Jerd asks for a mood:
 
-- `H`: happy
 - `C`: calm
-- `N`: neutral
+- `H`: happy
 - `S`: sad
+- `X`: anxious
 - `A`: angry
 
 Mood is stored in Markdown frontmatter:
@@ -113,7 +113,8 @@ jerd mood jul 2026
 ```
 
 The mood graph shows the selected month with days colored by the mood saved in
-each entry's frontmatter.
+each entry's frontmatter. Days with moods include the mood short form, such as
+`07-H` or `12-X`.
 
 - Left and right arrows move between months.
 - Escape returns home.

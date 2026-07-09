@@ -55,7 +55,7 @@ const cli = meow(
 	  $ jerd mood [mon YYYY]
 
 	Options
-		--mood, -mood, -m  Mood for jerd new: happy, calm, neutral, sad, or angry
+		--mood, -mood, -m  Mood for jerd new: calm, happy, sad, anxious, or angry
 		--screen  Screen to render: home, calendar, find, mood-check-in, mood-tracker, init, project-init, or new-entry
 
 	Examples

@@ -7,9 +7,9 @@ export const moodOptions: Array<{
 	readonly mood: JournalMood;
 	readonly symbol: string;
 }> = [
-	{label: 'Happy', mood: 'happy', symbol: 'H'},
 	{label: 'Calm', mood: 'calm', symbol: 'C'},
-	{label: 'Neutral', mood: 'neutral', symbol: 'N'},
+	{label: 'Happy', mood: 'happy', symbol: 'H'},
 	{label: 'Sad', mood: 'sad', symbol: 'S'},
+	{label: 'Anxious', mood: 'anxious', symbol: 'X'},
 	{label: 'Angry', mood: 'angry', symbol: 'A'},
 ];

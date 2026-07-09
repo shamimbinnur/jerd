@@ -8,12 +8,18 @@ import {
 	getShortMoodMonthLabel,
 } from '../utils/mood-month-query.js';
 
-const moodColors: Record<JournalMood, string> = {
-	angry: '#5C1212',
-	calm: '#A8D66D',
-	happy: colors.successAccent,
-	neutral: colors.textPrimary,
-	sad: colors.farewellProgressElapsed,
+const moodDisplay: Record<
+	JournalMood,
+	{
+		readonly color: string;
+		readonly symbol: string;
+	}
+> = {
+	angry: {color: colors.moodAngry, symbol: 'A'},
+	anxious: {color: colors.moodAnxious, symbol: 'X'},
+	calm: {color: colors.moodCalm, symbol: 'C'},
+	happy: {color: colors.moodHappy, symbol: 'H'},
+	sad: {color: colors.moodSad, symbol: 'S'},
 };
 
 type Props = {
@@ -24,9 +30,19 @@ type Props = {
 };
 
 const padDay = (day: number) => String(day).padStart(2, '0');
-const moodCellWidth = 5;
+const moodCellWidth = 6;
 const monthInputPlaceholder = '(e.g, jul 2026)';
 const monthInputWidth = 18;
+
+const formatMoodDay = (day: number, symbol: string) =>
+	`${padDay(day)}-${symbol}`;
+
+const formatPlainDay = (day: number) => padDay(day);
+
+const normalizeWeekRow = (row: ReadonlyArray<number | undefined>) => [
+	...row,
+	...Array.from({length: 7 - row.length}, () => undefined),
+];
 
 const renderMonthInput = (
 	value: string,
@@ -112,7 +128,7 @@ export default function MoodTracker({
 			>
 				<Box marginBottom={1}>
 					{weekLabels.map(label => (
-						<Box key={label} width={moodCellWidth}>
+						<Box key={label} flexShrink={0} width={moodCellWidth}>
 							<Text color={colors.textHint}>{label}</Text>
 						</Box>
 					))}
@@ -120,11 +136,12 @@ export default function MoodTracker({
 
 				{rows.map((row, rowIndex) => (
 					<Box key={`mood-week-${String(rowIndex)}`}>
-						{row.map((day, dayIndex) => {
+						{normalizeWeekRow(row).map((day, dayIndex) => {
 							if (!day) {
 								return (
 									<Box
 										key={`empty-${String(rowIndex)}-${String(dayIndex)}`}
+										flexShrink={0}
 										width={moodCellWidth}
 									>
 										<Text> </Text>
@@ -133,13 +150,20 @@ export default function MoodTracker({
 							}
 
 							const mood = moodsByDay.get(day);
+							const moodCell = mood ? moodDisplay[mood] : undefined;
 							return (
-								<Box key={`day-${String(day)}`} width={moodCellWidth}>
+								<Box
+									key={`day-${String(day)}`}
+									flexShrink={0}
+									width={moodCellWidth}
+								>
 									<Text
-										backgroundColor={mood ? moodColors[mood] : undefined}
-										color={mood ? colors.homeActionText : colors.textHint}
+										backgroundColor={moodCell?.color}
+										color={moodCell ? colors.homeActionText : colors.textHint}
 									>
-										{` ${padDay(day)} `}
+										{moodCell
+											? formatMoodDay(day, moodCell.symbol)
+											: formatPlainDay(day)}
 									</Text>
 								</Box>
 							);

@@ -47,6 +47,7 @@ test('upsertJournalFrontmatter preserves custom slug and tags', t => {
 test('parseJournalMood accepts valid moods case-insensitively', t => {
 	t.is(parseJournalMood('calm'), 'calm');
 	t.is(parseJournalMood('HAPPY'), 'happy');
+	t.is(parseJournalMood('AnXiOuS'), 'anxious');
 });
 
 test('parseJournalMood rejects misspelled moods', t => {

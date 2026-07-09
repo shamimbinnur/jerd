@@ -30,7 +30,7 @@ type Props = {
 export default function App({
 	configDirectory = process.cwd(),
 	initialFindQuery,
-	initialMood = 'neutral',
+	initialMood = 'calm',
 	initialMoodTrackerMonth,
 	invalidMood,
 	now,

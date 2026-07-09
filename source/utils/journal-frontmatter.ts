@@ -1,11 +1,11 @@
-export type JournalMood = 'angry' | 'calm' | 'happy' | 'neutral' | 'sad';
+export type JournalMood = 'calm' | 'happy' | 'sad' | 'anxious' | 'angry';
 
 export const journalMoods = [
-	'angry',
 	'calm',
 	'happy',
-	'neutral',
 	'sad',
+	'anxious',
+	'angry',
 ] as const;
 
 export const normalizeLineEndings = (value: string) =>
@@ -115,7 +115,7 @@ export const parseMoodFrontmatter = (
 		return undefined;
 	}
 
-	const moodMatch = /^\s*mood\s*:\s*(angry|calm|happy|neutral|sad)\s*$/imv.exec(
+	const moodMatch = /^\s*mood\s*:\s*(calm|happy|sad|anxious|angry)\s*$/imv.exec(
 		block,
 	);
 	const mood = moodMatch?.[1]?.toLowerCase();
