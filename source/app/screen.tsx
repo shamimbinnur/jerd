@@ -106,6 +106,7 @@ export default function AppScreen({
 				month={moodTracker.month.getMonth() + 1}
 				monthQuery={moodTracker.monthQuery}
 				moodsByDay={moodTracker.moodsByDay}
+				view={moodTracker.view}
 				year={moodTracker.month.getFullYear()}
 			/>
 		);

@@ -10,6 +10,8 @@ import {
 const firstDayOfMonth = (date: Date) =>
 	new Date(date.getFullYear(), date.getMonth(), 1);
 
+export type MoodTrackerView = 'heatgraph' | 'frequency';
+
 const getInitialMonth = (
 	initialMonth: MoodMonthQueryResult | undefined,
 	now: Date | undefined,
@@ -38,6 +40,7 @@ export const useMoodTracker = ({
 		new Map<number, JournalMood>(),
 	);
 	const [monthQuery, setMonthQuery] = React.useState('');
+	const [view, setView] = React.useState<MoodTrackerView>('heatgraph');
 
 	React.useEffect(() => {
 		if (!active) {
@@ -70,6 +73,7 @@ export const useMoodTracker = ({
 		setMonth(firstDayOfMonth(now ?? new Date()));
 		setMoodsByDay(new Map<number, JournalMood>());
 		setMonthQuery('');
+		setView('heatgraph');
 	}, [now]);
 
 	const moveMonth = React.useCallback((offset: number) => {
@@ -116,8 +120,10 @@ export const useMoodTracker = ({
 			moodsByDay,
 			moveMonth,
 			reset,
+			setView,
 			submitMonthQuery,
 			updateMonthQuery: setMonthQuery,
+			view,
 		}),
 		[
 			clearMonthQuery,
@@ -128,6 +134,7 @@ export const useMoodTracker = ({
 			moveMonth,
 			reset,
 			submitMonthQuery,
+			view,
 		],
 	);
 };

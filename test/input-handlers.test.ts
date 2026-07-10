@@ -5,6 +5,7 @@ import {
 	resolveHomeQuitInput,
 } from '../source/app/input-handlers.js';
 import type {Screen} from '../source/app/types.js';
+import type {MoodTrackerView} from '../source/hooks/use-mood-tracker.js';
 
 const noop = () => undefined;
 
@@ -42,6 +43,7 @@ test('handleMoodTrackerInput updates typed month query', t => {
 		monthQuery,
 		moveMonth: noop,
 		setActiveScreen: noop,
+		setView: noop,
 		submitMonthQuery: noop,
 		updateMonthQuery(value) {
 			monthQuery = typeof value === 'function' ? value(monthQuery) : value;
@@ -64,6 +66,7 @@ test('handleMoodTrackerInput completes and submits query shortcuts', t => {
 		monthQuery: 'ju',
 		moveMonth: noop,
 		setActiveScreen: noop,
+		setView: noop,
 		submitMonthQuery: noop,
 		updateMonthQuery: noop,
 	});
@@ -74,6 +77,7 @@ test('handleMoodTrackerInput completes and submits query shortcuts', t => {
 		monthQuery: 'july 2026',
 		moveMonth: noop,
 		setActiveScreen: noop,
+		setView: noop,
 		submitMonthQuery() {
 			didSubmit = true;
 		},
@@ -94,6 +98,7 @@ test('handleMoodTrackerInput deletes query text', t => {
 		monthQuery,
 		moveMonth: noop,
 		setActiveScreen: noop,
+		setView: noop,
 		submitMonthQuery: noop,
 		updateMonthQuery(value) {
 			monthQuery = typeof value === 'function' ? value(monthQuery) : value;
@@ -119,6 +124,7 @@ test('handleMoodTrackerInput keeps month navigation and escape', t => {
 			selectedScreen =
 				typeof value === 'function' ? value('mood-tracker') : value;
 		},
+		setView: noop,
 		submitMonthQuery: noop,
 		updateMonthQuery: noop,
 	});
@@ -134,6 +140,7 @@ test('handleMoodTrackerInput keeps month navigation and escape', t => {
 			selectedScreen =
 				typeof value === 'function' ? value('mood-tracker') : value;
 		},
+		setView: noop,
 		submitMonthQuery: noop,
 		updateMonthQuery: noop,
 	});
@@ -149,12 +156,41 @@ test('handleMoodTrackerInput keeps month navigation and escape', t => {
 			selectedScreen =
 				typeof value === 'function' ? value('mood-tracker') : value;
 		},
+		setView: noop,
 		submitMonthQuery: noop,
 		updateMonthQuery: noop,
 	});
 
 	t.is(monthOffset, 0);
 	t.is(selectedScreen, 'home');
+});
+
+test('handleMoodTrackerInput selects mood tracker views with arrow keys', t => {
+	const selectedViews: MoodTrackerView[] = [];
+	const setView = (
+		value: MoodTrackerView | ((current: MoodTrackerView) => MoodTrackerView),
+	) => {
+		const currentView = selectedViews.at(-1) ?? 'heatgraph';
+		selectedViews.push(
+			typeof value === 'function' ? value(currentView) : value,
+		);
+	};
+
+	const options = {
+		completeMonthQuery: noop,
+		input: '',
+		monthQuery: '',
+		moveMonth: noop,
+		setActiveScreen: noop,
+		setView,
+		submitMonthQuery: noop,
+		updateMonthQuery: noop,
+	};
+
+	handleMoodTrackerInput({...options, key: key({downArrow: true})});
+	handleMoodTrackerInput({...options, key: key({upArrow: true})});
+
+	t.deepEqual(selectedViews, ['frequency', 'heatgraph']);
 });
 
 test('resolveHomeQuitInput quits on a quick second q press', t => {
