@@ -37,6 +37,87 @@ const moodCellWidth = 6;
 const monthInputPlaceholder = '(e.g, jul 2026)';
 const monthInputWidth = 18;
 const frequencyBarWidth = 24;
+const trendLabelWidth = 8;
+const trendMoods: ReadonlyArray<{
+	readonly label: string;
+	readonly mood: JournalMood;
+}> = [
+	{label: 'Happy', mood: 'happy'},
+	{label: 'Calm', mood: 'calm'},
+	{label: 'Anxious', mood: 'anxious'},
+	{label: 'Sad', mood: 'sad'},
+	{label: 'Angry', mood: 'angry'},
+];
+const moodTrendLevels = new Map<JournalMood, number>(
+	trendMoods.map((option, index) => [option.mood, index]),
+);
+
+export const getMoodTrendLevel = (mood: JournalMood) =>
+	moodTrendLevels.get(mood) ?? 0;
+
+export const buildMoodTrendRows = (
+	moodsByDay: ReadonlyMap<number, JournalMood>,
+	daysInMonth: number,
+) => {
+	const rows = Array.from({length: trendMoods.length}, () =>
+		Array.from({length: daysInMonth}, () => ' '),
+	);
+
+	for (let day = 1; day <= daysInMonth; day += 1) {
+		const mood = moodsByDay.get(day);
+		if (!mood) {
+			continue;
+		}
+
+		const level = getMoodTrendLevel(mood);
+		const column = day - 1;
+		const row = rows[level];
+		if (row) {
+			row[column] = '●';
+		}
+
+		const previousMood = moodsByDay.get(day - 1);
+		if (!previousMood) {
+			continue;
+		}
+
+		const previousLevel = getMoodTrendLevel(previousMood);
+		if (previousLevel === level) {
+			continue;
+		}
+
+		const previousRow = rows[previousLevel];
+		if (previousRow) {
+			previousRow[column - 1] = previousLevel < level ? '╲' : '╱';
+		}
+
+		for (
+			let connectorLevel = Math.min(previousLevel, level) + 1;
+			connectorLevel < Math.max(previousLevel, level);
+			connectorLevel += 1
+		) {
+			const connectorRow = rows[connectorLevel];
+			if (connectorRow) {
+				connectorRow[column] = '│';
+			}
+		}
+	}
+
+	return rows.map(row => row.join(''));
+};
+
+export const buildTrendDateLabels = (daysInMonth: number) => {
+	const labels = Array.from({length: daysInMonth}, () => ' ');
+	const labelDays = new Set([1, 10, 20, daysInMonth]);
+	for (const day of labelDays) {
+		const label = String(day).padStart(2, '0');
+		const start = day === daysInMonth ? daysInMonth - 2 : day - 1;
+		labels[start] = label[0] ?? ' ';
+		labels[start + 1] = label[1] ?? ' ';
+	}
+
+	return labels.join('');
+};
 
 export const getMoodFrequencies = (
 	moodsByDay: ReadonlyMap<number, JournalMood>,
@@ -113,6 +194,14 @@ export default function MoodTracker({
 	});
 	const moodFrequencies = getMoodFrequencies(moodsByDay);
 	const maximumFrequency = Math.max(...moodFrequencies.values());
+	const daysInMonth = new Date(year, month, 0).getDate();
+	const trendRows = buildMoodTrendRows(moodsByDay, daysInMonth);
+	const viewLabel =
+		view === 'heatgraph'
+			? 'heatgraph'
+			: view === 'frequency'
+				? 'frequency'
+				: 'trend';
 
 	React.useEffect(() => {
 		const interval = setInterval(() => {
@@ -134,8 +223,7 @@ export default function MoodTracker({
 
 			<Box justifyContent="space-between" marginBottom={1} width="100%">
 				<Text color={colors.textPrimary}>
-					Mood {view === 'heatgraph' ? 'heatgraph' : 'frequency'} | {monthLabel}{' '}
-					{year}
+					Mood {viewLabel} | {monthLabel} {year}
 				</Text>
 				<Box>
 					<Text color={colors.panelBorder}>│</Text>
@@ -201,7 +289,7 @@ export default function MoodTracker({
 							</Box>
 						))}
 					</>
-				) : (
+				) : view === 'frequency' ? (
 					moodOptions.map((option, optionIndex) => {
 						const count = moodFrequencies.get(option.mood) ?? 0;
 						const barWidth = getFrequencyBarWidth(count, maximumFrequency);
@@ -225,6 +313,31 @@ export default function MoodTracker({
 							</Box>
 						);
 					})
+				) : (
+					<>
+						{trendMoods.map((option, level) => (
+							<Box key={option.mood}>
+								<Box width={trendLabelWidth}>
+									<Text color={moodDisplay[option.mood].color}>
+										{option.label}
+									</Text>
+								</Box>
+								<Text color={moodDisplay[option.mood].color}>
+									{trendRows[level]}
+								</Text>
+							</Box>
+						))}
+						<Box>
+							<Box width={trendLabelWidth} />
+							<Text color={colors.textHint}>{'·'.repeat(daysInMonth)}</Text>
+						</Box>
+						<Box>
+							<Box width={trendLabelWidth} />
+							<Text color={colors.textHint}>
+								{buildTrendDateLabels(daysInMonth)}
+							</Text>
+						</Box>
+					</>
 				)}
 			</Box>
 

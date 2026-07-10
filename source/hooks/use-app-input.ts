@@ -85,9 +85,9 @@ export const useAppInput = ({
 				input: normalizedInput,
 				key,
 				moveMonth: moodTracker.moveMonth,
+				moveView: moodTracker.moveView,
 				monthQuery: moodTracker.monthQuery,
 				setActiveScreen,
-				setView: moodTracker.setView,
 				submitMonthQuery: moodTracker.submitMonthQuery,
 				updateMonthQuery: moodTracker.updateMonthQuery,
 			});

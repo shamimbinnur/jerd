@@ -1,7 +1,6 @@
 import type {Key} from 'ink';
 import {moodOptions} from '../components/mood-check-in/mood-options.js';
 import type {JournalMood} from '../utils/journal-frontmatter.js';
-import type {MoodTrackerView} from '../hooks/use-mood-tracker.js';
 import type {Screen} from './types.js';
 
 type StateSetter<T> = (value: T | ((current: T) => T)) => void;
@@ -39,8 +38,8 @@ type MoodTrackerInput = Navigation & {
 	readonly input: string;
 	readonly key: Key;
 	readonly moveMonth: (offset: number) => void;
+	readonly moveView: (offset: number) => void;
 	readonly monthQuery: string;
-	readonly setView: StateSetter<MoodTrackerView>;
 	readonly submitMonthQuery: () => void;
 	readonly updateMonthQuery: StateSetter<string>;
 };
@@ -126,9 +125,9 @@ export const handleMoodTrackerInput = ({
 	input,
 	key,
 	moveMonth,
+	moveView,
 	monthQuery,
 	setActiveScreen,
-	setView,
 	submitMonthQuery,
 	updateMonthQuery,
 }: MoodTrackerInput) => {
@@ -167,12 +166,12 @@ export const handleMoodTrackerInput = ({
 	}
 
 	if (key.upArrow) {
-		setView('heatgraph');
+		moveView(-1);
 		return;
 	}
 
 	if (key.downArrow) {
-		setView('frequency');
+		moveView(1);
 		return;
 	}
 

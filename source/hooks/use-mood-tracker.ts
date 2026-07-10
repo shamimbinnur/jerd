@@ -10,7 +10,23 @@ import {
 const firstDayOfMonth = (date: Date) =>
 	new Date(date.getFullYear(), date.getMonth(), 1);
 
-export type MoodTrackerView = 'heatgraph' | 'frequency';
+export type MoodTrackerView = 'heatgraph' | 'frequency' | 'trend';
+
+const moodTrackerViews: readonly MoodTrackerView[] = [
+	'heatgraph',
+	'frequency',
+	'trend',
+];
+
+export const moveMoodTrackerView = (
+	view: MoodTrackerView,
+	offset: number,
+): MoodTrackerView => {
+	const currentIndex = moodTrackerViews.indexOf(view);
+	const nextIndex =
+		(currentIndex + offset + moodTrackerViews.length) % moodTrackerViews.length;
+	return moodTrackerViews[nextIndex] ?? 'heatgraph';
+};
 
 const getInitialMonth = (
 	initialMonth: MoodMonthQueryResult | undefined,
@@ -87,6 +103,10 @@ export const useMoodTracker = ({
 		);
 	}, []);
 
+	const moveView = React.useCallback((offset: number) => {
+		setView(currentView => moveMoodTrackerView(currentView, offset));
+	}, []);
+
 	const clearMonthQuery = React.useCallback(() => {
 		setMonthQuery('');
 	}, []);
@@ -119,8 +139,8 @@ export const useMoodTracker = ({
 			monthQuery,
 			moodsByDay,
 			moveMonth,
+			moveView,
 			reset,
-			setView,
 			submitMonthQuery,
 			updateMonthQuery: setMonthQuery,
 			view,
@@ -132,6 +152,7 @@ export const useMoodTracker = ({
 			monthQuery,
 			moodsByDay,
 			moveMonth,
+			moveView,
 			reset,
 			submitMonthQuery,
 			view,
