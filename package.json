@@ -7,12 +7,6 @@
 	"license": "MIT",
 	"bin": "dist/cli.js",
 	"type": "module",
-	"imports": {
-		"#screens/*": {
-			"types": "./source/screens/*",
-			"default": "./dist/screens/*"
-		}
-	},
 	"engines": {
 		"node": ">=24.18.0"
 	},
